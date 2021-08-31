@@ -5,6 +5,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import ChatPage from './ChatPage.js'
 import './App.css';
+import { fbLogin } from './modules/FB.js'
 
 
 class LoginPage extends React.Component {
@@ -54,11 +55,12 @@ class LoginPage extends React.Component {
             data-auto-logout-link="false" data-use-continue-as="true"
             callback={this.responseFacebook}
           > </div> */}
-          <FacebookLogin
+          {/* <FacebookLogin
             appId="370672534609881"
             autoLoad={false}
             fields="name,email,picture"
-            callback={this.responseFacebook} />
+            callback={this.responseFacebook} /> */}
+          
           
           <p id="login_text">
             By logging in, you allow to save the cookies
