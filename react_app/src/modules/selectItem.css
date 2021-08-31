@@ -1,0 +1,36 @@
+.mainWrapperConv {
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.mainWrapperConv:hover {
+    cursor: pointer;
+}
+
+.convInnerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.convInnerContainCheck {
+    margin: auto 20px;
+}
+
+.convInnerContainerDetails {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.convInnerContainerDetails > h3, h5 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}

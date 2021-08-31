@@ -1,43 +1,38 @@
 import FacebookLogin from 'react-facebook-login';
-import './App.css';
-import chatPage from './ChatPage.js'
 import cookie from 'react-cookies'
 import React from 'react';
 // import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import ChatPage from './ChatPage.js'
+import './App.css';
 
 
-class App extends React.Component {
+class LoginPage extends React.Component {
   constructor(props){
     super(props)
-    this.onLogin = this.onLogin.bind(this)
-    this.onLogout = this.onLogout.bind(this)
-    this.setState = this.setState.bind(this)
-    this.state = {
-      fbDetails : null
-    }
+    this.state = { fbDetails : null }
+    // this.setState = this.setState.bind(this)
   }
-  responseFacebook(response) {
-    console.log('Response : ' + response)
+  responseFacebook =  (response) => {
+    console.log(`FB Response: ${response}`)
+    cookie.save('fbDetails', response, { path: '/' })
     this.setState({ fbDetails: response })
+    window.location.href="/chat" ;
   }
   componentDidMount() {
     let response = cookie.load('fbDetails')
-    this.setState({ fbDetails: response })
-  }
-  onLogin(response) {
-    cookie.save('fbDetails', response, { path: '/' })
-    this.setState({ fbDetails: response })
-  }
-  onLogout() {
-    cookie.remove('fbDetails', { path: '/' })
-    var response = null  // after logout
+    console.log(`Cookie: ${response}`)
     this.setState({ fbDetails: response })
   }
   render()  {
     const { fbDetails } = this.state
-    console.log(`Access token 1: ${fbDetails}`)
+    console.log(`Page 1: ${fbDetails}`)
 
-    return (fbDetails) ? chatPage : ( 
+    if (fbDetails) { // already logged in  redirect to /chat
+      return <Redirect to="/chat" />;
+    }
+
+    return ( 
       <div className="App">
         <header className="App-header">
           
@@ -54,22 +49,56 @@ class App extends React.Component {
           <img src="/connector_image.jpg" width="400" alt="Connector" />
           <br />
           <p id="login_text"> Click to login with Facebook </p>
-          {/* <div class="fb-login-button" data-width="300" data-size="large"
+          {/* <div className="fb-login-button" data-width="300" data-size="large"
             data-button-type="login_with" data-layout="rounded"
             data-auto-logout-link="false" data-use-continue-as="true"
-            callback={responseFacebook}
+            callback={this.responseFacebook}
           > </div> */}
-    
           <FacebookLogin
             appId="370672534609881"
-            autoLoad={true}
-            fields="name,email,picture,phone"
+            autoLoad={false}
+            fields="name,email,picture"
             callback={this.responseFacebook} />
+          
+          <p id="login_text">
+            By logging in, you allow to save the cookies
+          </p>
     
         </header>
       </div>
     );
   }
+}
+
+class LogoutPage extends React.Component {
+  componentDidMount() {
+    cookie.remove('fbDetails', { path: '/' })  // remove cookie
+    console.log("Removed cookie. Logged out")
+    this.setState({ fbDetails: false })  // after logout
+  }
+  render() {
+    return <Redirect to="/" />;
+  }
+}
+
+function App()  {
+  return (
+    <Router>
+      <header>
+        <main>
+          <Route path="/">
+            <LoginPage />
+          </Route>
+          <Route path="/chat">
+            <ChatPage />
+          </Route>
+          <Route path="/logout">
+            <LogoutPage />
+          </Route>
+        </main>
+      </header>
+    </Router>
+  )
 }
 
 export default App;
