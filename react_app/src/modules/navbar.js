@@ -32,7 +32,7 @@ const Navbar = () => {
             <div className="navItem" onClick={() => alert('No such option')}>
                 <VscGraph color="white"/>
             </div>
-            <div className="navItem" onClick={() => {<Redirect to="/logout" />; }} >
+            <div className="navItem" onClick={() => window.document.location="/logout"}>
                 <FiLogOut color="white"/>
             </div>
             
