@@ -1,0 +1,23 @@
+{
+  "name": "rp_fb_replier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vh-praneeth/RP_FB_replier.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vh-praneeth/RP_FB_replier/issues"
+  },
+  "homepage": "https://github.com/vh-praneeth/RP_FB_replier#readme",
+  "dependencies": {
+    "create-react-app": "^1.2.1",
+    "react-cookies": "^0.1.1"
+  }
+}
