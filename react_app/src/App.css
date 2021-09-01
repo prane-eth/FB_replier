@@ -6,7 +6,7 @@
 
 #login_text  {
   color: #559;
-  font-size: 20px;
+  font-size: 17px;
 }
 
 strong  {
@@ -43,11 +43,13 @@ strong  {
   color: #61dafb;
 }
 
-/* @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
+.login_button {
+  background-color: rgb( 24, 118, 232);
+  width: 300px;
+
+  background-color: white;
+  border-radius: 8px;
+  color: #004e96;
+  padding: 6px 20px;
+  font-weight: bold;
+}

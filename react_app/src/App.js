@@ -1,12 +1,9 @@
 import FacebookLogin from 'react-facebook-login';
 import cookie from 'react-cookies'
 import React from 'react';
-// import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import ChatPage from './ChatPage.js'
 import './App.css';
-import { fbLogin } from './modules/FB.js'
-
 
 class LoginPage extends React.Component {
   constructor(props){
@@ -29,9 +26,8 @@ class LoginPage extends React.Component {
     const { fbDetails } = this.state
     console.log(`Page 1: ${fbDetails}`)
 
-    if (fbDetails) { // already logged in  redirect to /chat
+    if (fbDetails)  // already logged in  redirect to /chat
       return <Redirect to="/chat" />;
-    }
 
     return ( 
       <div className="App">
@@ -49,21 +45,23 @@ class LoginPage extends React.Component {
           
           <img src="/connector_image.jpg" width="400" alt="Connector" />
           <br />
-          <p id="login_text"> Click to login with Facebook </p>
+          <p id="login_text"> Click below to login </p>
+
           {/* <div className="fb-login-button" data-width="300" data-size="large"
             data-button-type="login_with" data-layout="rounded"
             data-auto-logout-link="false" data-use-continue-as="true"
             callback={this.responseFacebook}
           > </div> */}
-          {/* <FacebookLogin
+          <FacebookLogin
             appId="370672534609881"
             autoLoad={false}
             fields="name,email,picture"
-            callback={this.responseFacebook} /> */}
-          
+            callback={this.responseFacebook} />
+          {/* <div className="login_button" data-width="300" onClick={() => fbLogin() }
+          > Login with Facebook </div> */}
           
           <p id="login_text">
-            By logging in, you allow to save the cookies
+            By logging in, you give consent to store and access the cookies
           </p>
     
         </header>
