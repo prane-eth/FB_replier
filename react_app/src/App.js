@@ -1,21 +1,42 @@
-import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login'
 import cookie from 'react-cookies'
-import React from 'react';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import React from 'react'
+import axios from 'axios'
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import ChatPage from './ChatPage.js'
-import './App.css';
+import { getURL } from './modules/functions'
+import './App.css'
+
 
 class LoginPage extends React.Component {
   constructor(props){
     super(props)
-    this.state = { fbDetails : null }
+    this.state = { fbDetails : null, response: null }
     // this.setState = this.setState.bind(this)
   }
-  responseFacebook =  (response) => {
-    console.log(`FB Response: ${response}`)
-    cookie.save('fbDetails', response, { path: '/' })
-    this.setState({ fbDetails: response })
-    window.location.href="/chat" ;
+  responseFacebook = async (fbDetails) => {
+    console.log(`FB Response: ${fbDetails}`)
+    cookie.save('fbDetails', fbDetails, { path: '/' })
+    this.setState({ fbDetails: fbDetails })
+
+    // get page token
+    var url = getURL('me/accounts', fbDetails.accessToken)
+    var response = await axios.get(url);
+    response = response.data.data
+    if (!'0' in response) {
+      alert("Error: This app can't be used if you have no pages")
+      return
+    }
+    else {
+      var pageId = response['0'].id   // first page owned by this user
+      var pageToken = response['0'].access_token
+
+      this.setState({ pageToken: pageToken, pageId: pageId })
+      cookie.save('pageToken', pageToken, { path: '/' })
+      cookie.save('pageId', pageId, { path: '/' })
+      window.location.href="/chat"
+      return
+    }
   }
   componentDidMount() {
     let response = cookie.load('fbDetails')
@@ -25,8 +46,9 @@ class LoginPage extends React.Component {
   render()  {
     const { fbDetails } = this.state
     console.log(`Page 1: ${fbDetails}`)
+    const pageToken = cookie.load('pageToken', { path: '/' })
 
-    if (fbDetails)  // already logged in  redirect to /chat
+    if (fbDetails && pageToken)  // already logged in  redirect to /chat
       return <Redirect to="/chat" />;
 
     return ( 
@@ -71,13 +93,21 @@ class LoginPage extends React.Component {
 }
 
 class LogoutPage extends React.Component {
+  sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
   componentDidMount() {
     cookie.remove('fbDetails', { path: '/' })  // remove cookie
+    cookie.remove('pageToken', { path: '/' })
+    cookie.remove('pageId', { path: '/' })
     console.log("Removed cookie. Logged out")
     this.setState({ fbDetails: false })  // after logout
+    this.sleep(500)
   }
   render() {
-    return <Redirect to="/" />;
+    window.location.href="/" 
+    return <p> Logging out... </p>
+    // return <Redirect to="/" />
   }
 }
 

@@ -1,4 +1,5 @@
 node_modules/
+react_app/__tests__/
 
 # GitHub's gitignore template for JS
 # Logs

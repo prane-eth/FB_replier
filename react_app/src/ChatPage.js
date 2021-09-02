@@ -2,32 +2,36 @@ import React from 'react'
 import cookie from 'react-cookies'
 import { Redirect } from 'react-router-dom'
 import { HiMenuAlt1 } from 'react-icons/hi'
+import { HiUserCircle } from 'react-icons/hi'
 import { IoMdRefresh } from 'react-icons/io'
+import { IoMdCall } from 'react-icons/io'
 import { BiSend } from 'react-icons/bi'
 
 import Navbar from './modules/navbar'
+import { getURL } from './modules/functions'
 import './ChatPage.css'
 
 
 class ChatPage extends React.Component {
     constructor(props){
       super(props)
-      this.state = { fbDetails : false }
+      this.state = { fbDetails : false, conversations: [], current: -1}
       // this.setState = this.setState.bind(this)
     }
-    // componentDidMount() {
-    //   let response = cookie.load('fbDetails')
-    //   console.log(`Cookie: ${response}`)
-    //   this.setState({ fbDetails: response })
-    // }
     render()    {
-        // const { fbDetails } = this.state
-        const fbDetails = cookie.load('fbDetails')
-        console.log(`Chat page: ${fbDetails}`)
+        const fbDetails = cookie.load('fbDetails', { path: '/' })
+        const pageToken = cookie.load('pageToken', { path: '/' })
+        const pageId = cookie.load('pageId', { path: '/' })
+        // console.log(`Chat page: ${fbDetails}`)
 
-        if (!fbDetails) { // if not logged in, go to login page
+        if (!fbDetails || !pageToken) { // if not logged in, go to login page
             return <Redirect to="/" />;
         }
+        // useEffect(() => {
+            var url = getURL(pageId, pageToken)
+            var res = await axios.get(url)
+            console.log(res)
+        // }, []);
         
         return (
             <div className="mainWrapperHome">
@@ -71,6 +75,10 @@ class ChatPage extends React.Component {
                         />
                         <h3 className="detail0"> {'Amit RG'} </h3>
                         <h5 className="detail"> Online </h5>
+                        <button onClick={() => alert('No option to call')}
+                            > <IoMdCall />  Call </button>
+                        <button onClick={() => alert('No option to view profile')}
+                            > <HiUserCircle /> Profile </button>
                     </div>
                     <div className="homeCurrentUserProfileDetails">
                         <h3 className="detail0">Customer Details</h3>
