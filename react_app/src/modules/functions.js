@@ -1,4 +1,6 @@
 import axios from "axios";
+import React from "react";
+import './functions.css';
 
 export const sendMessage = (recipient_psid, sender_psid, message, page_access_token) => {
     return new Promise(async (resolve, reject) => {
@@ -32,14 +34,59 @@ export const sendMessage = (recipient_psid, sender_psid, message, page_access_to
     });
 }
 
-export async function loadPath(path, token) {
-    var url = `https://graph.facebook.com/${path}?access_token=${token}`
-    // var response = await axios.get(url);
-    return await axios.get(url);
-    // usage: var res = await loadPath('/104870408597057/', token)
+export async function loadPath(path, pageToken) {
+    var url = `https://graph.facebook.com/${path}?access_token=${pageToken}`
+    var response = await axios.get(url);
+    return response;
 }
 
 export function getURL(path, pageToken)   {
     var url = `https://graph.facebook.com/${path}?access_token=${pageToken}`
     return url
+}
+
+export class Conversation extends React.Component {
+    render()    {
+        return (
+            <div 
+                className="mainWrapperConv"
+                style={{
+                    backgroundColor: this.props.isSelected ? '#edeeef' : 'white',
+                    borderBottom: '#E5E5E5',
+                    borderBottomWidth: 1,
+                }}
+                onClick={this.props.onClick}
+                >
+                <div className="convInnerContainer">
+                    <input className="convInnerContainCheck" type="checkbox" 
+                        defaultChecked={false} />
+                    <div className="convInnerContainerDetails">
+                        <p className="largertext"> {this.props.name}  </p>
+                        <p className="mediumtext"> {this.props.type}  </p>
+                        <p className="smalltext"> {this.props.text}  </p>
+                        <p className="lastReply"> {this.props.lastReply}  </p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+export class Message extends React.Component {
+    render() {
+        if (this.props.from == 'page')  {
+            return (
+                <div className="msgRight">
+                    {this.props.message}
+                </div>
+            )
+        }
+        else    {
+            return (
+                <div className="msgLeft">
+                    {this.props.message}
+                </div>
+            )
+        }
+    }
 }

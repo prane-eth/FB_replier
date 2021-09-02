@@ -90,7 +90,7 @@
     height: 40px;
     border-radius: 12px;
     padding: 2px 12px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .homeCurrentConversationNewMessageSend:hover {
@@ -158,4 +158,61 @@ button  {
     padding: 5px;
     margin: 5px;
     background-color: white;
+}
+
+.largertext {
+    font-size: 18px;
+    font-weight: bold;
+}
+.mediumtext {
+    font-size: 13px;
+    font-weight: bold;
+}
+.smalltext   {
+    font-size: 12px;
+}
+.lastReply  {
+    font-size: 12px;
+}
+
+.msgLeft    {
+    margin-left: 20px;
+}
+.msgRight   {
+    margin-left: 300px;
+}
+
+
+/*  imported from functions.css  */
+.mainWrapperConv {
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 8px;
+    /* padding-top: 20px;
+    padding-bottom: 20px; */
+}
+.mainWrapperConv:hover {
+    cursor: pointer;
+}
+.convInnerContainer {
+    display: flex;
+    /* flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start; */
+}
+.convInnerContainCheck {
+    margin: auto 20px;
+}
+.convInnerContainerDetails {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: flex-start;
+    align-items: flex-start; */
+}
+.convInnerContainerDetails > h3, h5 {
+    margin-bottom: 0px;
+    margin-top: 0px;
 }

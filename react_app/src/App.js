@@ -23,16 +23,18 @@ class LoginPage extends React.Component {
     var url = getURL('me/accounts', fbDetails.accessToken)
     var response = await axios.get(url);
     response = response.data.data
-    if (!'0' in response) {
+    if (!('0' in response)) {
       alert("Error: This app can't be used if you have no pages")
       return
     }
     else {
       var pageId = response['0'].id   // first page owned by this user
       var pageToken = response['0'].access_token
+      var pageName = response['0'].name
 
       this.setState({ pageToken: pageToken, pageId: pageId })
       cookie.save('pageToken', pageToken, { path: '/' })
+      cookie.save('pageName', pageName, { path: '/' })
       cookie.save('pageId', pageId, { path: '/' })
       window.location.href="/chat"
       return
@@ -42,6 +44,11 @@ class LoginPage extends React.Component {
     let response = cookie.load('fbDetails')
     console.log(`Cookie: ${response}`)
     this.setState({ fbDetails: response })
+    this.interval = null;
+  }
+  componentWillUnmount() {
+    if (this.interval)
+      clearInterval(this.interval);
   }
   render()  {
     const { fbDetails } = this.state
@@ -105,9 +112,8 @@ class LogoutPage extends React.Component {
     this.sleep(500)
   }
   render() {
-    window.location.href="/" 
+    window.location.href = "/" 
     return <p> Logging out... </p>
-    // return <Redirect to="/" />
   }
 }
 
@@ -116,14 +122,14 @@ function App()  {
     <Router>
       <header>
         <main>
-          <Route path="/">
-            <LoginPage />
-          </Route>
           <Route path="/chat">
             <ChatPage />
           </Route>
           <Route path="/logout">
             <LogoutPage />
+          </Route>
+          <Route path="/">
+            <LoginPage />
           </Route>
         </main>
       </header>
