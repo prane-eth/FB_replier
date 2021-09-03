@@ -9,13 +9,13 @@
 
 .conv {
     width: 25vw;
-    height: 100vh;
+    height: 99vh;
     background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    border-right: 0px none grey;
+    border: 1px solid rgb(217, 219, 223);
 }
 
 .convHeader {
@@ -25,7 +25,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    /* border-bottom: 1px solid grey; */
+    border-bottom: 1px solid rgb(217, 219, 223);
 }
 
 .convHeader > h2 {
@@ -41,6 +41,7 @@
     margin-left: 20px;
     font-size: 20px;
     padding-top: 3px;
+    color: rgb( 32,  34,  35)
 }
 
 .refreshBtn {
@@ -49,6 +50,7 @@
     margin-left: auto; 
     margin-right: 1vw;
     margin-top: 30px;
+    color: rgb( 92,  95,  98);
 }
 
 .currConv {
@@ -71,6 +73,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    border-bottom: 1px solid rgb(217, 219, 223);
 }
 
 .currConvHeader > h3 {
@@ -114,29 +117,35 @@
 }
 
 .currUser {
-    width: 90%;
+    width: 100%;
     height: 100vh;
     background-color: rgb(239, 242, 246);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    border: 1px solid rgb(217, 219, 223);
+    border-top: 0px;
+    border-bottom: 0px;
 }
 
 .currUserProfile {
     padding-top: 40px;
-    padding-bottom: 40px;
+    padding-bottom: 25px;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: white;
+    border: 1px solid rgb(217, 219, 223);
+    border-top: 0px;
 }
 
 .currUserProfileImage {
-    width: 120px;
-    border-radius: 60px;
+    width: 80px;
+    border-radius: 40px;
+    margin-bottom: 20px;
 }
 
 .currUserProfileDetails {
@@ -146,6 +155,7 @@
     background-color: white;
     padding: 15px;
     font-size: 15px;
+    border: 1px solid rgb(217, 219, 223);
 }
 
 .currUserProfileDetailsItem {
@@ -153,6 +163,10 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+.lastItem   {
+    margin-bottom: 20px;
 }
 
 .detail-header {
@@ -167,7 +181,9 @@
     margin-top: 8px;
 }
 .detail-grey    {
-    opacity: 0.6;
+    /* opacity: 0.6; */
+    font-size: 15px;
+    color: rgb(153, 153, 153);
 }
 .detail-value {
     margin: 0;
@@ -181,25 +197,26 @@
 .details-link   {
     color: rgb(32, 100, 163);
     text-decoration: none;
-    margin-top: 10px;
     font-weight: bold;
+    /* margin-top: 10px; */
 }
 
 button  {
-    border: 1px solid #808080;
+    border: 1px solid rgb(187, 191, 195);
     border-radius: 3px;
     padding: 5px;
     margin: 5px;
     background-color: white;
     font-size: 15px;
-    margin: 0 auto;
-    display: inline;
+    margin-top: 30px;
 }
-/* .rightBtn   {
-    float: right;
-    margin-left: auto; 
-    margin-right: 20px;
-} */
+.rightBtn   {
+    margin-left: 20px;
+}
+.btnContainer   {
+    display: flex;
+    flex-direction: row;
+}
 
 .largertext {
     font-size: 18px;
@@ -214,6 +231,10 @@ button  {
 }
 .lastReply  {
     font-size: 12px;
+    margin-top: 4px;
+    margin-right: 2px;
+    /* margin-bottom: auto;
+    margin-left: auto; */
 }
 
 .msg    {
@@ -222,7 +243,8 @@ button  {
     border-radius: 10px;
     margin-top: 10px;
     padding: 10px;
-    font-size: 16px;
+    font-size: 15px;
+    height: 23px;
 }
 .msgLeft    {
     margin-left: 20px;
@@ -232,10 +254,7 @@ button  {
     margin-left: auto; 
     margin-right: 20px;
 }
-
-
-/*  imported from functions.css  */
-.mainWrapperConv {
+.convContainer {
     width: 25vw;
     display: flex;
     flex-direction: column;
@@ -244,32 +263,38 @@ button  {
     padding-top: 8px;
     /* padding-top: 20px;
     padding-bottom: 20px; */
-    border-bottom: 1px solid #808080;
+    background-color: white;
+    border-bottom: 1px solid rgb(217, 219, 223);
 }
-.mainWrapperConv:hover {
+.convContainer:hover {
     cursor: pointer;
+    /* change mouse cursor to pointer to make it look like a link */
 }
-.convInnerContainer {
-    display: flex;
-    /* flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start; */
-}
-.checkbox {
-    margin: auto 20px;
-}
-.convInnerContainerDetails {
+.msgDetailsContainer {
     display: flex;
     flex-direction: column;
-    /* justify-content: flex-start;
-    align-items: flex-start; */
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-bottom: 1px solid rgb(217, 219, 223);
+    width: 100%;
 }
-.convInnerContainerDetails > h3, h5 {
+.nameTypeContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.nameTypeContainer > h3, h5 {
     margin-bottom: 0px;
     margin-top: 0px;
 }
-
 #msgbox {
-    border: 1px solid rgb(  0,  71, 155);
+    border: 1.5px solid rgb(  0,  71, 155);
     border-radius: 8px;
+}
+.checkbox {
+    margin-left: 20px;
+    margin-top: 20px;
+    width:  17px;
+    height: 17px;
 }

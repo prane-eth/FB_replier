@@ -269,10 +269,12 @@ class ChatPage extends React.Component {
                         />
                         <h4 className="detail-header"> {'Unknown User'} </h4>
                         <h5 className="detail-grey">  <GoPrimitiveDot/> Offline </h5>
-                        <button onClick={() => alert('No option to call')}
-                            > <IoMdCall color="#5c5f62" />  Call </button>
-                        <button className="rightBtn" onClick={() => alert('No option to view profile')}
-                            > <HiUserCircle color="#5c5f62" /> Profile </button>
+                        <div className="btnContainer">
+                            <button onClick={() => alert('No option to call')}
+                                > <IoMdCall color="#5c5f62" />  Call </button>
+                            <button className="rightBtn" onClick={() => alert('No option to view profile')}
+                                > <HiUserCircle color="#5c5f62" /> Profile </button>
+                        </div>
                     </div>
                     <div className="currUserProfileDetails">
                         <h4 className="detail-header">Customer Details</h4>
@@ -284,7 +286,7 @@ class ChatPage extends React.Component {
                             <h4 className="detail-key"> First Name </h4>
                             <h4 className="detail-value"> {'Unknown'} </h4>
                         </div>
-                        <div className="currUserProfileDetailsItem">
+                        <div className="currUserProfileDetailsItem lastItem">
                             <h4 className="detail-key"> Last Name </h4>
                             <h4 className="detail-value"> {'User'} </h4>
                         </div>
