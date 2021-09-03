@@ -6,6 +6,7 @@ import { HiUserCircle } from 'react-icons/hi'
 import { IoMdRefresh } from 'react-icons/io'
 import { IoMdCall } from 'react-icons/io'
 import { BiSend } from 'react-icons/bi'
+import { GoPrimitiveDot } from 'react-icons/go'
 
 import Navbar from './modules/navbar'
 import { loadPath, Conversation, Message } from './modules/functions'
@@ -72,14 +73,6 @@ class ChatPage extends React.Component {
             alert('Error: unable to find Page Token. Kindly login again.')
             return <Redirect to="/" />;
         }
-
-        const convertTime = (lastTime) => {
-            var time = new Date(lastTime);
-            time = time.toString().split(' ')
-            time = [time[1], time[2], time[3], time[4]]
-            time = time.join(' ')
-            return time
-        }
         const addMessages = (index) => {
             var conversations = this.state.conversations
             var key = Object.keys(conversations)[index];
@@ -141,7 +134,7 @@ class ChatPage extends React.Component {
                         // console.log(replies)
                         for (var reply of replies)  {
                             // console.log(conversations)
-                            console.log(reply)
+                            // console.log(reply)
                             if ('from' in reply && reply.from.id === pageId)    {  // reply from page
                                 conversations[comment.id]['messages'].push({
                                     from: 'page', message: reply.message,
@@ -162,7 +155,7 @@ class ChatPage extends React.Component {
                     }
                 }
             }
-            conversations['count'] = commentCount
+            conversations['commentCount'] = commentCount
             // console.log(conversations)
             return conversations
         }
@@ -185,6 +178,14 @@ class ChatPage extends React.Component {
         // return () => clearInterval(this.interval);
         // }, []);
 
+        const convertTime = (lastTime) => {
+            var time = new Date(lastTime);
+            time = time.toString().split(' ')
+            time = [time[1], time[2], time[3], time[4]]
+            time = time.join(' ')
+            return time
+        }
+
         return (
             <div className="mainWrapperHome">
                 <Navbar />
@@ -201,10 +202,10 @@ class ChatPage extends React.Component {
                         </div>
                     </div>
                     {
-                        Object.keys(this.state.conversations).map((item,index) => {
-                            if (item.toString() == 'count')
+                        Object.keys(this.state.conversations).map((key,index) => {
+                            if (key.toString() == 'commentCount')
                                 return <br/>
-                            item = this.state.conversations[item]
+                            var item = this.state.conversations[key]
                             item.lastReply = convertTime(item.lastReply);
                             return (<Conversation
                                 isSelected = {index==this.state.currentSelected}
@@ -213,6 +214,7 @@ class ChatPage extends React.Component {
                                 text = {item.messages[0].message}
                                 lastReply = {item.lastReply}
                                 onClick={() => { addMessages(index) }}
+                                index={index}
                             />)
                         })
                     }
@@ -265,27 +267,28 @@ class ChatPage extends React.Component {
                             className="currUserProfileImage"
                             alt="user-profile"
                         />
-                        <h4 className="detail0"> {'Unknown User'} </h4>
-                        <h5 className="detail"> Online </h5>
+                        <h4 className="detail-header"> {'Unknown User'} </h4>
+                        <h5 className="detail-grey">  <GoPrimitiveDot/> Offline </h5>
                         <button onClick={() => alert('No option to call')}
-                            > <IoMdCall />  Call </button>
-                        <button onClick={() => alert('No option to view profile')}
-                            > <HiUserCircle /> Profile </button>
+                            > <IoMdCall color="#5c5f62" />  Call </button>
+                        <button className="rightBtn" onClick={() => alert('No option to view profile')}
+                            > <HiUserCircle color="#5c5f62" /> Profile </button>
                     </div>
                     <div className="currUserProfileDetails">
-                        <h4 className="detail0">Customer Details</h4>
+                        <h4 className="detail-header">Customer Details</h4>
                         <div className="currUserProfileDetailsItem">
-                            <h4 className="detail"> Email </h4>
-                            <h4 className="detail1"> {'unknown@user.com'} </h4>
+                            <h4 className="detail-key"> Email </h4>
+                            <h4 className="detail-value"> {'unknown@user.com'} </h4>
                         </div>
                         <div className="currUserProfileDetailsItem">
-                            <h4 className="detail"> First Name </h4>
-                            <h4 className="detail1"> {'Unknown'} </h4>
+                            <h4 className="detail-key"> First Name </h4>
+                            <h4 className="detail-value"> {'Unknown'} </h4>
                         </div>
                         <div className="currUserProfileDetailsItem">
-                            <h4 className="detail"> Last Name </h4>
-                            <h4 className="detail1"> {'User'} </h4>
+                            <h4 className="detail-key"> Last Name </h4>
+                            <h4 className="detail-value"> {'User'} </h4>
                         </div>
+                        <a href="#" className="details-link"> View more details </a>
                     </div>
                 </div>
             </div>

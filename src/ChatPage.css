@@ -39,7 +39,7 @@
 
 .largetext   {
     margin-left: 20px;
-    font-size: 18px;
+    font-size: 20px;
     padding-top: 3px;
 }
 
@@ -114,7 +114,7 @@
 }
 
 .currUser {
-    width: 100%;
+    width: 90%;
     height: 100vh;
     background-color: rgb(239, 242, 246);
     display: flex;
@@ -144,7 +144,8 @@
     border-radius: 8px;
     width: 80%;
     background-color: white;
-    padding: 20px;
+    padding: 15px;
+    font-size: 15px;
 }
 
 .currUserProfileDetailsItem {
@@ -154,28 +155,51 @@
     align-items: center;
 }
 
-.detail {
+.detail-header {
+    margin: 0;
+    margin-bottom: 10;
+    color: rgb( 70,  71,  72);
+}
+.detail-key {
     margin: 0;
     opacity: 0.6;
-    margin-bottom: 10;
+    color: rgb( 92,  95,  98);
+    margin-top: 8px;
 }
-.detail1 {
-    margin: 0;
+.detail-grey    {
+    opacity: 0.6;
 }
-
-.detail0 {
+.detail-value {
     margin: 0;
     margin-top: 20;
+    font-size: 14px;
+    opacity: 0.8;
+    color: rgb( 69,  71,  72);
+    margin-top: 8px;
+}
+
+.details-link   {
+    color: rgb(32, 100, 163);
+    text-decoration: none;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
 button  {
-    border: 3px solid #808080;
-    border-radius: 5px;
+    border: 1px solid #808080;
+    border-radius: 3px;
     padding: 5px;
     margin: 5px;
     background-color: white;
     font-size: 15px;
+    margin: 0 auto;
+    display: inline;
 }
+/* .rightBtn   {
+    float: right;
+    margin-left: auto; 
+    margin-right: 20px;
+} */
 
 .largertext {
     font-size: 18px;
@@ -204,7 +228,6 @@ button  {
     margin-left: 20px;
 }
 .msgRight   {
-    margin: 20px;
     float: right;
     margin-left: auto; 
     margin-right: 20px;
