@@ -7,7 +7,7 @@
     height: 100vh;
 }
 
-.homeConversationsTab {
+.conv {
     width: 25vw;
     height: 100vh;
     background-color: white;
@@ -15,20 +15,20 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    border-right: 1px solid grey;
+    border-right: 0px none grey;
 }
 
-.homeConversationsTabHeader {
+.convHeader {
     width: 25vw;
     height: 60px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    border-bottom: 1px solid grey;
+    /* border-bottom: 1px solid grey; */
 }
 
-.homeConversationsTabHeader > h2 {
+.convHeader > h2 {
     width: 20vw;
     display: flex;
     flex-direction: row;
@@ -37,77 +37,93 @@
     margin-left: 10px;
 }
 
-.homeConversationsTabHeaderRefresh:hover {
-    cursor: pointer;
+.largetext   {
+    margin-left: 20px;
+    font-size: 18px;
+    padding-top: 3px;
 }
 
-.homeCurrentConversation {
+.refreshBtn {
+    margin: 20px;
+    float: right;
+    margin-left: auto; 
+    margin-right: 1vw;
+    margin-top: 30px;
+}
+
+.currConv {
     width: 45vw;
     height: 100vh;
-    border-right: 1px solid grey;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     background-color: #E5E5E5;
+    /* border-right: 1px solid grey; */
 }
 
-.homeCurrentConversationHeader {
+.currConvHeader {
     background-color: white;
     width: 45vw;
     height: 60px;
-    border-bottom: 1px solid grey;
+    border: 0px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
 }
 
-.homeCurrentConversationHeader > h3 {
+.currConvHeader > h3 {
     margin-left: 20px;
 }
 
-.homeCurrentConversationContainer {
+.currConvContainer {
     width: 100%;
     height: 90%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    background-color: rgb(246, 246, 247);
+    /* border: 1px solid #808080;
+    border-bottom: 0px; */
 }
 
-.homeCurrentConversationNewMessage {
+.currConvNewMessage {
     width: 100%;
     height: 100px;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
+    background-color: rgb(246, 246, 247);
+    border: 0px solid transparent;
 }
 
-.homeCurrentConversationNewMessageInput {
-    width: 90%;
-    height: 40px;
+.currConvNewMessageInput {
+    width: 85%;
+    height: 35px;
     border-radius: 12px;
     padding: 2px 12px;
     font-size: 16px;
+    margin-left: 15px;
 }
 
-.homeCurrentConversationNewMessageSend:hover {
+.currConvNewMessageSend:hover {
     cursor: pointer;
 }
 
-.homeCurrentUser {
+.currUser {
     width: 100%;
     height: 100vh;
-    background-color: #dfe9f1;
+    background-color: rgb(239, 242, 246);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
 }
 
-.homeCurrentUserProfile {
+.currUserProfile {
     padding-top: 40px;
     padding-bottom: 40px;
     width: 100%;
@@ -118,12 +134,12 @@
     background-color: white;
 }
 
-.homeCurrentUserProfileImage {
+.currUserProfileImage {
     width: 120px;
     border-radius: 60px;
 }
 
-.homeCurrentUserProfileDetails {
+.currUserProfileDetails {
     margin-top: 20px;
     border-radius: 8px;
     width: 80%;
@@ -131,7 +147,7 @@
     padding: 20px;
 }
 
-.homeCurrentUserProfileDetailsItem {
+.currUserProfileDetailsItem {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -158,6 +174,7 @@ button  {
     padding: 5px;
     margin: 5px;
     background-color: white;
+    font-size: 15px;
 }
 
 .largertext {
@@ -175,11 +192,22 @@ button  {
     font-size: 12px;
 }
 
+.msg    {
+    background-color: white;
+    border: 1px solid rgb(231, 231, 232);
+    border-radius: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
 .msgLeft    {
     margin-left: 20px;
 }
 .msgRight   {
-    margin-left: 300px;
+    margin: 20px;
+    float: right;
+    margin-left: auto; 
+    margin-right: 20px;
 }
 
 
@@ -193,6 +221,7 @@ button  {
     padding-top: 8px;
     /* padding-top: 20px;
     padding-bottom: 20px; */
+    border-bottom: 1px solid #808080;
 }
 .mainWrapperConv:hover {
     cursor: pointer;
@@ -203,7 +232,7 @@ button  {
     justify-content: flex-start;
     align-items: flex-start; */
 }
-.convInnerContainCheck {
+.checkbox {
     margin: auto 20px;
 }
 .convInnerContainerDetails {
@@ -215,4 +244,9 @@ button  {
 .convInnerContainerDetails > h3, h5 {
     margin-bottom: 0px;
     margin-top: 0px;
+}
+
+#msgbox {
+    border: 1px solid rgb(  0,  71, 155);
+    border-radius: 8px;
 }

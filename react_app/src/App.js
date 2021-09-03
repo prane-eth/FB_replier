@@ -22,8 +22,9 @@ class LoginPage extends React.Component {
     // get page token
     var url = getURL('me/accounts', fbDetails.accessToken)
     var response = await axios.get(url);
+    // console.log(response)
     response = response.data.data
-    if (!('0' in response)) {
+    if (Object.keys(response).length == 0) {
       alert("Error: This app can't be used if you have no pages")
       return
     }
@@ -44,11 +45,6 @@ class LoginPage extends React.Component {
     let response = cookie.load('fbDetails')
     console.log(`Cookie: ${response}`)
     this.setState({ fbDetails: response })
-    this.interval = null;
-  }
-  componentWillUnmount() {
-    if (this.interval)
-      clearInterval(this.interval);
   }
   render()  {
     const { fbDetails } = this.state

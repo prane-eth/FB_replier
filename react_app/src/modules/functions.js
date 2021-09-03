@@ -58,7 +58,7 @@ export class Conversation extends React.Component {
                 onClick={this.props.onClick}
                 >
                 <div className="convInnerContainer">
-                    <input className="convInnerContainCheck" type="checkbox" 
+                    <input className="checkbox" type="checkbox" 
                         defaultChecked={false} />
                     <div className="convInnerContainerDetails">
                         <p className="largertext"> {this.props.name}  </p>
@@ -76,14 +76,14 @@ export class Message extends React.Component {
     render() {
         if (this.props.from == 'page')  {
             return (
-                <div className="msgRight">
+                <div className="msg msgRight">
                     {this.props.message}
                 </div>
             )
         }
         else    {
             return (
-                <div className="msgLeft">
+                <div className="msg msgLeft">
                     {this.props.message}
                 </div>
             )
