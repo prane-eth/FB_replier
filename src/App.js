@@ -61,12 +61,12 @@ class LoginPage extends React.Component {
           <img 
             src="/Richpanel_logo_colored.svg"
             alt="Richpanel logo" width="300"
-          />
+          /> <br /> <br />
           <div className="align_left">
             <p> <strong> Hi, we are Richpanel </strong> </p>
             <b> Deliver effortless customer service through Facebook </b>
           </div>
-          <br /> <br />
+          <br />
           
           <img src="/connector_image.jpg" width="400" alt="Connector" />
           <br />

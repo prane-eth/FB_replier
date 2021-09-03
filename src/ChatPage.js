@@ -31,26 +31,6 @@ class ChatPage extends React.Component {
                     {from: 'page', message: 'Thank you for choosing Amazon'},
                 ]
             },
-            '365836152': {
-                userReply: '2021-09-02T02:49:10+0000',
-                pageReply: '2021-09-02T02:49:10+0000',
-                lastReply: '2021-09-02T02:49:10+0000',
-                userName: 'user Name',
-                messages: [
-                    {from: 'user Name', message: 'this is other comment'},
-                    {from: 'page', message: 'other reply given by page'},
-                ]
-            },
-            '365836153': {
-                userReply: '2021-09-02T02:49:10+0000',
-                pageReply: '2021-09-02T02:49:10+0000',
-                lastReply: '2021-09-02T02:49:10+0000',
-                userName: 'user Name',
-                messages: [
-                    {from: 'user Name', message: 'this is 3rd comment'},
-                    {from: 'page', message: 'yet another reply given by page'},
-                ]
-            },
             commentCount: 1
         }
         this.state = {
@@ -181,13 +161,17 @@ class ChatPage extends React.Component {
         const convertTime = (lastTime) => {
             var time = new Date(lastTime);
             time = time.toString().split(' ')
-            time = [time[1], time[2], time[3], time[4]]
+            var time_min = time[4]
+            time_min = time_min.split(':')
+            time_min = time_min[0] + ':' + time_min[1]
+            time[4]=  time_min
+            time = [time[4], time[1], time[2]]  // , time[3]
             time = time.join(' ')
             return time
         }
 
         return (
-            <div className="mainWrapperHome">
+            <div className="pageContainer">
                 <Navbar />
 
                 <div className="conv">

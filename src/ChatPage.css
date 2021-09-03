@@ -1,4 +1,4 @@
-.mainWrapperHome {
+.pageContainer {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -51,6 +51,9 @@
     margin-right: 1vw;
     margin-top: 30px;
     color: rgb( 92,  95,  98);
+}
+.refreshBtn:hover {
+    cursor: pointer;
 }
 
 .currConv {
@@ -227,14 +230,18 @@ button  {
     font-weight: bold;
 }
 .smalltext   {
-    font-size: 12px;
+    font-size: 13px;
+    margin-left: 18px;
+    margin-top: 10px;
+    font-weight: bold;
 }
 .lastReply  {
     font-size: 12px;
-    margin-top: 4px;
-    margin-right: 2px;
-    /* margin-bottom: auto;
-    margin-left: auto; */
+    width: 50px;
+    margin-right: 18px;
+    margin-left: auto;
+    margin-top: 0px;
+    margin-bottom: auto;
 }
 
 .msg    {
@@ -261,10 +268,11 @@ button  {
     justify-content: flex-start;
     align-items: flex-start;
     padding-top: 8px;
-    /* padding-top: 20px;
-    padding-bottom: 20px; */
     background-color: white;
     border-bottom: 1px solid rgb(217, 219, 223);
+    /*  */
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 .convContainer:hover {
     cursor: pointer;
@@ -272,10 +280,16 @@ button  {
 }
 .msgDetailsContainer {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
-    border-bottom: 1px solid rgb(217, 219, 223);
+    width: 100%;
+}
+.msgTimeContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
     width: 100%;
 }
 .nameTypeContainer {
@@ -284,7 +298,7 @@ button  {
     justify-content: flex-start;
     align-items: flex-start;
 }
-.nameTypeContainer > h3, h5 {
+.nameTypeContainer > h3, h5, p {
     margin-bottom: 0px;
     margin-top: 0px;
 }
@@ -297,4 +311,6 @@ button  {
     margin-top: 20px;
     width:  17px;
     height: 17px;
+    /*  */
+    margin: auto 20px;
 }

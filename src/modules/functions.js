@@ -16,25 +16,22 @@ export function getURL(path, pageToken)   {
 export class Conversation extends React.Component {
     render()    {
         return (
-            <div 
-                className="convContainer"
-                style={{
-                    backgroundColor: this.props.isSelected ? '#edeeef' : 'white',
-                    borderBottom: '#E5E5E5',
-                    borderBottomWidth: 1,
-                }}
+            <div className="convContainer"
+                style={{backgroundColor: this.props.isSelected ? '#edeeef' : 'white'}}
                 onClick={this.props.onClick}
                 >
-                <div className="msgDetailsContainer">
-                    <input className="checkbox" type="checkbox" 
-                        defaultChecked={false} />
-                    <div className="nameTypeContainer">
-                        <p className="lastReply"> {this.props.lastReply}  </p>
-                        <p className="largertext"> {this.props.name}  </p>
-                        <p className="mediumtext"> {this.props.type}  </p>
+                <div className="msgTimeContainer">
+                    <div className="msgDetailsContainer">
+                        <input className="checkbox" type="checkbox" 
+                            defaultChecked={false} />
+                        <div className="nameTypeContainer">
+                            <p className="largertext"> {this.props.name}  </p>
+                            <p className="mediumtext"> {this.props.type}  </p>
+                        </div>
                     </div>
-                    <p className="smalltext"> {this.props.text}  </p>
+                    <p className="lastReply"> {this.props.lastReply}  </p>
                 </div>
+                <p className="smalltext"> {this.props.text}  </p>
             </div>
         )
     }
