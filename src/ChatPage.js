@@ -17,7 +17,7 @@ class ChatPage extends React.Component {
     constructor(props)  {
         super(props)
         // this.setState = this.setState.bind(this)
-        this.interval = null;
+        this.interval = false;
         var conversations = {   // dummy data
             '365836151': {
                 userReply: '2021-09-02T02:49:10+0000',
@@ -147,16 +147,16 @@ class ChatPage extends React.Component {
                 this.setState({ conversations: conversations })
             }
             // else
-                // console.log('Checked conversations. Not updated')
+            //     console.log('Checked conversations. Not updated')
         }
 
         // useEffect(() => {
         // refreshConversations(pageId, pageToken, pageName)  // refresh when page just loaded
-        // this.interval = setInterval(() => {  // refresh every 10 seconds
-        //     refreshConversations(pageId, pageToken, pageName)
-        // }, 10000);  // 30 seconds - due to rate-limiting issue
-        // return () => clearInterval(this.interval);
-        // }, []);
+        if (!this.interval)
+            this.interval = setInterval(() => {  // refresh every 10 seconds
+                // refreshConversations(pageId, pageToken, pageName)
+            }, 10000);  // 30 seconds - due to rate-limiting issue
+        // }, [this.state.conversations.commentCount]);
 
         const convertTime = (lastTime) => {
             var time = new Date(lastTime);
