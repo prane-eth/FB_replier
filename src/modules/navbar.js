@@ -20,7 +20,7 @@ const Navbar = () => {
     return (
         <div className="mainWrapperNav">
             <div className="navItem" onClick={<Redirect to="/" />}>
-                <img className="navItemLogo" src="/RPIcon.png"
+                <img className="navItemLogo" src="/InvertedIcon.png"
                     alt="Richpanel logo" width="50" />
             </div>
             <div className="navItem navItemSelected">

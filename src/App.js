@@ -102,6 +102,7 @@ class LogoutPage extends React.Component {
   componentDidMount() {
     cookie.remove('fbDetails', { path: '/' })  // remove cookie
     cookie.remove('pageToken', { path: '/' })
+    cookie.remove('pageName', { path: '/' })
     cookie.remove('pageId', { path: '/' })
     console.log("Removed cookie. Logged out")
     this.setState({ fbDetails: false })  // after logout
@@ -118,14 +119,14 @@ function App()  {
     <Router>
       <header>
         <main>
+          <Route path="/" exact>
+            <LoginPage />
+          </Route>
           <Route path="/chat">
             <ChatPage />
           </Route>
           <Route path="/logout">
             <LogoutPage />
-          </Route>
-          <Route path="/">
-            <LoginPage />
           </Route>
         </main>
       </header>

@@ -25,8 +25,8 @@ export class Conversation extends React.Component {
                         <input className="checkbox" type="checkbox" 
                             defaultChecked={false} />
                         <div className="nameTypeContainer">
-                            <p className="largertext"> {this.props.name}  </p>
-                            <p className="mediumtext"> {this.props.type}  </p>
+                            <p className="largertext"> {this.props.fullName}  </p>
+                            <p className="mediumtext"> {this.props.msgSource}  </p>
                         </div>
                     </div>
                     <p className="lastReply"> {this.props.lastReply}  </p>
