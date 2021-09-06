@@ -54,7 +54,6 @@ class ChatPage extends React.Component {
         this.messages = {}  // Facebook DM messages
     }
     componentDidMount = () => {
-        
         if (!this.interval)  {
             this.interval = setInterval(() => {  // refresh at regular intervals
                 // this.refreshComments()
@@ -67,15 +66,25 @@ class ChatPage extends React.Component {
         }
         this.socket.emit("connectSocket", this.pageID)
         this.socket.on("newMessage", this.handleNewMessage)
-        this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
-        this.socket.on('oldMessages', this.handleOldMessages)
+        // this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
+        // this.socket.on('oldMessages', this.handleOldMessages)
+
+        var res = this.getOldMessages()
+        console.log('data')
+        console.log(res)
+        // this.messages = res.data['0']
 
         // this.refreshComments()  // refresh when page just loaded
     }
-    handleOldMessages = (messages) => {
-        this.messages = messages
-        console.log(this.messages)
+    getOldMessages = async() =>  {
+        var url = `http://localhost:5000/oldMessages/${this.pageID}`
+        var res = await axios.get(url)
+        return res.data;
     }
+    // handleOldMessages = (messages) => {
+    //     this.messages = messages
+    //     console.log(this.messages)
+    // }
     handleNewMessage = async (userID, msgText, sendTime) => {
         console.log('got new message', userID, msgText, sendTime)
         var conversations = this.state.conversations
