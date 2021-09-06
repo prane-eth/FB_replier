@@ -22,24 +22,24 @@ class ChatPage extends React.Component {
         // this.setState = this.setState.bind(this)
         this.interval = false;
         var conversations = {   // dummy data
-            '365836151': {
-                userReply: '2021-09-02T02:49:10+0000',
-                pageReply: '2021-09-02T02:49:10+0000',
-                lastReply: '2021-09-02T02:49:10+0000',
-                firstName: 'Dummy',
-                lastName: 'Chat',
-                fullName: 'Dummy Chat',
-                userEmail: 'user@email.com',
-                userProfilePic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyb_QltThW67ODgBYOo4qFR8n7Xai2JLQhIVEDQ2cpJ8S2Hs5eDmlU9R3JMnvrVn99gkw&usqp=CAU",
-                msgSource: 'Facebook Post',
-                messages: [
-                    {from: 'user Name', message: 'this is comment'},
-                    {from: 'page', message: 'reply given by page'},
-                    {from: 'user Name', message: 'Got item replaced. Thank you.'},
-                    {from: 'page', message: 'Thank you for choosing Amazon'},
-                ]
-            },
-            commentCount: 1
+            // '365836151': {
+            //     userReply: '2021-09-02T02:49:10+0000',
+            //     pageReply: '2021-09-02T02:49:10+0000',
+            //     lastReply: '2021-09-02T02:49:10+0000',
+            //     firstName: 'Dummy',
+            //     lastName: 'Chat',
+            //     fullName: 'Dummy Chat',
+            //     userEmail: 'user@email.com',
+            //     userProfilePic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyb_QltThW67ODgBYOo4qFR8n7Xai2JLQhIVEDQ2cpJ8S2Hs5eDmlU9R3JMnvrVn99gkw&usqp=CAU",
+            //     msgSource: 'Facebook Post',
+            //     messages: [
+            //         {from: 'user Name', message: 'this is comment'},
+            //         {from: 'page', message: 'reply given by page'},
+            //         {from: 'user Name', message: 'Got item replaced. Thank you.'},
+            //         {from: 'page', message: 'Thank you for choosing Amazon'},
+            //     ]
+            // },
+            commentCount: 0
         }
         this.state = {     // using dummy data to display before refreshing
             conversations: conversations || {},
@@ -52,39 +52,36 @@ class ChatPage extends React.Component {
         this.socket = null
         this.currUser = ''
         this.messages = {}  // Facebook DM messages
+        // this.backendURL = 'localhost:5000'
+        this.backendURL = 'rpanel-be.herokuapp.com'
     }
     componentDidMount = () => {
         if (!this.interval)  {
             this.interval = setInterval(() => {  // refresh at regular intervals
-                // this.refreshComments()
-            }, 30000);  // 30 seconds - due to rate-limiting issue
+                this.refreshComments()
+            }, 10000);  // 30 seconds - due to rate-limiting issue
         }
 
-        if (!this.socket)   {   // socket
-            var socketURL = 'localhost:5000'
-            this.socket = socketio.connect(socketURL)
+        if (!this.socket)   {   // if socket does not exist, create it
+            this.socket = socketio.connect(this.backendURL)
         }
         this.socket.emit("connectSocket", this.pageID)
         this.socket.on("newMessage", this.handleNewMessage)
         // this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
         // this.socket.on('oldMessages', this.handleOldMessages)
 
-        var res = this.getOldMessages()
-        console.log('data')
-        console.log(res)
-        // this.messages = res.data['0']
+        // var res = this.getOldMessages()
+        // this.messages = res.data
+        // console.log('data')
+        // console.log(this.messages)
 
-        // this.refreshComments()  // refresh when page just loaded
+        this.refreshComments()  // refresh when page just loaded
     }
     getOldMessages = async() =>  {
-        var url = `http://localhost:5000/oldMessages/${this.pageID}`
+        var url = `https://${this.backendURL}/oldMessages/${this.pageID}`
         var res = await axios.get(url)
         return res.data;
     }
-    // handleOldMessages = (messages) => {
-    //     this.messages = messages
-    //     console.log(this.messages)
-    // }
     handleNewMessage = async (userID, msgText, sendTime) => {
         console.log('got new message', userID, msgText, sendTime)
         var conversations = this.state.conversations
@@ -116,6 +113,7 @@ class ChatPage extends React.Component {
         })
         conversations[userID].userReply = sendTime  // update last reply time
         conversations[userID].lastReply = sendTime
+        console.log(this.messages)
         this.messages[userID] = conversations[userID]  // add to this.messages
         this.socket.emit('updateMessages', this.messages, this.pageID)
         this.sleep(1000)
@@ -133,11 +131,12 @@ class ChatPage extends React.Component {
             var conversation = conversations[key]
             var messages = conversation.messages
 
+            console.log(conversation)
             document.getElementsByClassName('largetext')[1].innerText = conversation.fullName
             document.getElementsByClassName('detail-header')[0].innerText = conversation.fullName
             document.getElementsByClassName('detail-value')[0].innerText = conversation.userEmail
             document.getElementsByClassName('detail-value')[1].innerText = conversation.firstName
-            document.getElementsByClassName('detail-value')[2].value = conversation.lastName
+            document.getElementsByClassName('detail-value')[2].innerText = conversation.lastName
             document.getElementsByClassName('currUserProfileImage')[0].src = conversation.userProfilePic
         }
         this.setState({ messages: messages, currIndex: index, conversations: conversations })
