@@ -1,6 +1,7 @@
 import React from 'react'
 import cookie from 'react-cookies'
 import axios from "axios";
+import socketio from "socket.io-client";
 import { Redirect } from 'react-router-dom'
 import { HiMenuAlt1 } from 'react-icons/hi'
 import { HiUserCircle } from 'react-icons/hi'
@@ -13,16 +14,13 @@ import Navbar from './modules/navbar'
 import { loadPath, Conversation, Message } from './modules/functions'
 import './ChatPage.css'
 
-import socketio from "socket.io-client";
-
 
 class ChatPage extends React.Component {
     constructor(props)  {
         super(props)
-        // this.setState = this.setState.bind(this)
         this.interval = false;
-        var conversations = {   // dummy data
-            // '365836151': {
+        var conversations = {   // to store all conversations (comments and messages)
+            // '365836151': {   // dummy data
             //     userReply: '2021-09-02T02:49:10+0000',
             //     pageReply: '2021-09-02T02:49:10+0000',
             //     lastReply: '2021-09-02T02:49:10+0000',
@@ -67,20 +65,13 @@ class ChatPage extends React.Component {
         }
         this.socket.emit("connectSocket", this.pageID)
         this.socket.on("newMessage", this.handleNewMessage)
-        // this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
-        // this.socket.on('oldMessages', this.handleOldMessages)
-
-        // var res = this.getOldMessages()
-        // this.messages = res.data
-        // console.log('data')
-        // console.log(this.messages)
-
-        this.refreshComments()  // refresh when page just loaded
+        this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
+        this.socket.on('oldMessages', this.handleOldMessages)
     }
-    getOldMessages = async() =>  {
-        var url = `https://${this.backendURL}/oldMessages/${this.pageID}`
-        var res = await axios.get(url)
-        return res.data;
+    handleOldMessages = (msg) => {
+        console.log('got old messages')
+        this.messages = msg;
+        this.refreshComments()  // refresh when page just loaded
     }
     handleNewMessage = async (userID, msgText, sendTime) => {
         console.log('got new message', userID, msgText, sendTime)
