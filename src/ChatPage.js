@@ -26,9 +26,9 @@ class ChatPage extends React.Component {
                 userReply: '2021-09-02T02:49:10+0000',
                 pageReply: '2021-09-02T02:49:10+0000',
                 lastReply: '2021-09-02T02:49:10+0000',
-                firstName: 'Raja',
-                lastName: 'Kumar',
-                fullName: 'Raja Kumar',
+                firstName: 'Dummy',
+                lastName: 'Chat',
+                fullName: 'Dummy Chat',
                 userEmail: 'user@email.com',
                 userProfilePic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyb_QltThW67ODgBYOo4qFR8n7Xai2JLQhIVEDQ2cpJ8S2Hs5eDmlU9R3JMnvrVn99gkw&usqp=CAU",
                 msgSource: 'Facebook Post',
@@ -48,15 +48,12 @@ class ChatPage extends React.Component {
         this.fbDetails = ''
         this.pageToken = ''
         this.pageName = ''
-        this.pageId = ''
+        this.pageID = ''
         this.socket = null
         this.currUser = ''
         this.messages = {}  // Facebook DM messages
     }
     componentDidMount = () => {
-        // temporarily stopped
-        // this.refreshComments()  // refresh when page just loaded
-        // this.refreshMessages()  // get messages only 1 time from server
         
         if (!this.interval)  {
             this.interval = setInterval(() => {  // refresh at regular intervals
@@ -67,20 +64,30 @@ class ChatPage extends React.Component {
         if (!this.socket)   {   // socket
             var socketURL = 'localhost:5000'
             this.socket = socketio.connect(socketURL)
-            this.socket.emit("connectSocket", this.pageID)
-            this.socket.on("newMessage", this.handleNewMessage)
         }
+        this.socket.emit("connectSocket", this.pageID)
+        this.socket.on("newMessage", this.handleNewMessage)
+        this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
+        this.socket.on('oldMessages', this.handleOldMessages)
+
+        // this.refreshComments()  // refresh when page just loaded
     }
-    handleNewMessage = (userID, msgText, sendTime) => {
+    handleOldMessages = (messages) => {
+        this.messages = messages
+        console.log(this.messages)
+    }
+    handleNewMessage = async (userID, msgText, sendTime) => {
         console.log('got new message', userID, msgText, sendTime)
         var conversations = this.state.conversations
         if (userID in conversations) {  // user sent message earlier
             var messageList = conversations[userID].messages
+            // if same message is already present, return
             if (msgText == messageList[messageList.length - 1].message)
-                return;  // if same message is already present
+                return;
         }
         else    {  // if user never sent message earlier
-            var res = loadPath(userID, this.pageToken)
+            var res = await loadPath(userID, this.pageToken)
+            res = res.data
             conversations[userID] = {}  // create object for user
             conversations[userID] = {
                 userReply: sendTime,
@@ -101,6 +108,7 @@ class ChatPage extends React.Component {
         conversations[userID].userReply = sendTime  // update last reply time
         conversations[userID].lastReply = sendTime
         this.messages[userID] = conversations[userID]  // add to this.messages
+        this.socket.emit('updateMessages', this.messages, this.pageID)
         this.sleep(1000)
         this.addMessagesByIndex(this.state.currIndex)  // update messages on page
     }
@@ -110,19 +118,23 @@ class ChatPage extends React.Component {
     }
     addMessagesByIndex = (index) => {
         var messages = []
+        var conversations = this.state.conversations
         if (index != -1)  {
-            var conversations = this.state.conversations
             var key = Object.keys(conversations)[index]
-            // console.log(conversations)
-            // console.log(key)
-            // console.log(conversations[key])
-            // console.log(messages)
-            messages = conversations[key].messages
+            var conversation = conversations[key]
+            var messages = conversation.messages
+
+            document.getElementsByClassName('largetext')[1].innerText = conversation.fullName
+            document.getElementsByClassName('detail-header')[0].innerText = conversation.fullName
+            document.getElementsByClassName('detail-value')[0].innerText = conversation.userEmail
+            document.getElementsByClassName('detail-value')[1].innerText = conversation.firstName
+            document.getElementsByClassName('detail-value')[2].value = conversation.lastName
+            document.getElementsByClassName('currUserProfileImage')[0].src = conversation.userProfilePic
         }
         this.setState({ messages: messages, currIndex: index, conversations: conversations })
     }
     getComments = async () =>  {
-        var pageId = this.pageId, pageToken = this.pageToken, pageName = this.pageName;
+        var pageId = this.pageID, pageToken = this.pageToken, pageName = this.pageName;
 
         var posts = await loadPath(`${pageId}/posts`, pageToken)
         if (posts.hasOwnProperty('error')) { //'error' in posts) {  // && res.error.code == 190) {
@@ -146,14 +158,13 @@ class ChatPage extends React.Component {
                     if ('from' in comment)  {
                         var fullName = comment.from.name.split(' ')
                         var firstName = fullName[0]
-                        var lastName = fullName[fullName.length - 1];
+                        var lastName = fullName[fullName.length - 1]
                     }
                     else    {
                         var fullName = 'Unknown User'
                         var firstName = 'Unknown'
                         var lastName = 'User'
                     }
-                    // console.log(comment)
                     // remove pageName from mentioned comment
                     comment.message = comment.message.replace(pageName, '', 1).trim()
                     conversations[comment.id] = {}  // creating value in object
@@ -248,29 +259,26 @@ class ChatPage extends React.Component {
             this.refreshComments()
         }
         else    {   // if it is Facebook Messenger DM
-            var userID = conversation.userID
-            this.socket.send('replyMessage', this.pageToken, this.pageID, userID, msgText)
+            console.log('replyMessage', this.pageToken, convID, msgText)
+            this.socket.emit('replyMessage', this.pageToken, convID, msgText)
             conversation.messages.push({
-                from: conversations[userID].fullName, message: msgText
+                from: 'page', message: msgText
             })
             var sendTime = new Date().toISOString()
-            conversations[userID].userReply = sendTime  // update last reply time
-            conversations[userID].lastReply = sendTime
+            conversation.userReply = sendTime  // update last reply time
+            conversation.lastReply = sendTime
         }
         msgbox.value = ''  // clear existing value in the box
         this.messages[convID] = conversation  // add to this.messages and this.conversations
         this.state.conversations[convID] = conversation
+        this.socket.emit('updateMessages', this.messages, this.pageID)
         this.addMessagesByIndex(this.state.currIndex)  // load messages after sending new message
-    }
-    refreshMessages = () => {
-        // TODO: get old messages from server and store in this.messages
-
     }
     render()    {
         this.fbDetails = cookie.load('fbDetails', { path: '/' })
         this.pageToken = cookie.load('pageToken', { path: '/' })
         this.pageName = cookie.load('pageName', { path: '/' })
-        this.pageId = cookie.load('pageId', { path: '/' })
+        this.pageID = cookie.load('pageId', { path: '/' })
         if (!this.fbDetails || !this.pageToken) { // if not logged in, go to login page
             // console.log(this.fbDetails)
             // console.log(this.pageToken)
@@ -286,29 +294,23 @@ class ChatPage extends React.Component {
                     <div className="convHeader">
                         <HiMenuAlt1 style={{marginLeft: 10}} />
                         <h3 className="largetext"> Conversations </h3>
-                        <div className="refreshBtn" onClick={() => {
-                                    this.refreshComments(this.pageId, this.pageToken, this.pageName)
-                                }}>
+                        <div className="refreshBtn" onClick={() => this.refreshComments() }>
                             <IoMdRefresh style={{marginRight: 10, align:'right'}} />
                         </div>
                     </div>
                     {
                         Object.keys(this.state.conversations).map((key,index) => {
-                            if (key.toString() == 'commentCount')
-                                return <br/>
+                            if (key.toString() == 'commentCount' || key.toString() == '_id')
+                                return <div key={index} />
                             var item = this.state.conversations[key]
                             return (<Conversation
+                                key={index}
                                 isSelected = {index==this.state.currIndex}
-                                firstName = {item.firstName}
-                                lastName = {item.lastName}
                                 fullName = {item.fullName}
-                                userEmail = {item.userEmail}
-                                userProfilePic = {item.userProfilePic}
                                 msgSource = {item.msgSource}
                                 text = {item.messages[0].message}
                                 lastReply = { this.convertTime(item.lastReply) }
                                 onClick={() => { this.addMessagesByIndex(index) }}
-                                index={index}
                             />)
                         })
                     }
@@ -321,6 +323,7 @@ class ChatPage extends React.Component {
                         {
                             this.state.messages.map(item => {
                                 return (<Message
+                                    key = {item.from+item.message}  // because of Error: should every item have unique key
                                     from = {item.from}
                                     message = {item.message}
                                 />)
@@ -349,32 +352,34 @@ class ChatPage extends React.Component {
                 <div className="currUser">
                     <div className="currUserProfile">
                         <img
-                            src={ this.currUser.userProfilePic }
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyb_QltThW67ODgBYOo4qFR8n7Xai2JLQhIVEDQ2cpJ8S2Hs5eDmlU9R3JMnvrVn99gkw&usqp=CAU"
                             className="currUserProfileImage"
                             alt="user-profile"
                         />
-                        <h4 className="detail-header"> {this.currUser.name} </h4>
+                        <h4 className="detail-header"> Unknown User </h4>
                         <h5 className="detail-grey">  <GoPrimitiveDot/> Offline </h5>
                         <div className="btnContainer">
-                            <button onClick={() => alert('No option to call')}
-                                > <IoMdCall color="#5c5f62" />  Call </button>
-                            <button className="rightBtn" onClick={() => alert('No option to view profile')}
-                                > <HiUserCircle color="#5c5f62" /> Profile </button>
+                            <button onClick={() => alert('No option to call')}>
+                                <IoMdCall color="#5c5f62" />  Call
+                            </button>
+                            <button className="rightBtn" onClick={() => alert('No option to view profile')}>
+                                <HiUserCircle color="#5c5f62" /> Profile 
+                            </button>
                         </div>
                     </div>
                     <div className="currUserProfileDetails">
                         <h4 className="detail-header">Customer Details</h4>
                         <div className="currUserProfileDetailsItem">
                             <h4 className="detail-key"> Email </h4>
-                            <h4 className="detail-value"> {this.currUser.userEmail || 'unknown@user.com'} </h4>
+                            <h4 className="detail-value"> unknown@user.com </h4>
                         </div>
                         <div className="currUserProfileDetailsItem">
                             <h4 className="detail-key"> First Name </h4>
-                            <h4 className="detail-value"> {'Unknown'} </h4>
+                            <h4 className="detail-value"> Unknown </h4>
                         </div>
                         <div className="currUserProfileDetailsItem lastItem">
                             <h4 className="detail-key"> Last Name </h4>
-                            <h4 className="detail-value"> {'User'} </h4>
+                            <h4 className="detail-value"> User </h4>
                         </div>
                         <a href="#" className="details-link"> View more details </a>
                     </div>

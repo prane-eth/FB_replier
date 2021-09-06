@@ -19,7 +19,7 @@ if (fbDetails)
 const Navbar = () => {
     return (
         <div className="mainWrapperNav">
-            <div className="navItem" onClick={<Redirect to="/" />}>
+            <div className="navItem" onClick={() => <Redirect to="/" />}>
                 <img className="navItemLogo" src="/InvertedIcon.png"
                     alt="Richpanel logo" width="50" />
             </div>

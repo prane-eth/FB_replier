@@ -1,27 +1,60 @@
-/* https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/quick-start/app.js
-https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start/
 
-To run this code:
-  1. Deploy this code to a server running Node.js
-  2. Run `yarn install`
-  3. Add your VERIFY_TOKEN and PAGE_ACCESS_TOKEN to your environment vars
-*/
 
 'use strict';
+
+
+
+
+// MongoDB part
+const MongoClient = require('mongodb').MongoClient
+
+var user = 'user1'
+var pass = 'pass1234'
+var uri = 'mongodb+srv://' + user + ':' + pass
+    + '@cluster0.nk3zq.mongodb.net/myFirstDatabase'
+    + '?retryWrites=true&w=majority';
+
+const updateMessages = (messages, pageID) => {
+  MongoClient.connect(uri, function(err, client) {
+    if (err)
+      return console.log("Error connecting to DB ");
+
+    var collectionName = 'page' + pageID
+    var db = client.db('myFirstDatabase')
+    var collection = db.collection(collectionName)
+
+    try {   // delete all existing data
+      collection.deleteMany({})
+      console.log('Deleted data from DB')
+    } catch (err) {
+      console.log('DB Deletion error')
+      console.log(err.toString())
+    }
+
+    // insert data
+    collection.insertOne(messages, (err, res) => {
+      if (err)
+        console.log("Error 2: " + err.toString())
+      else
+        console.log('inserted to DB')
+      client.close();
+    })
+  });
+}
+
+
+// Socket.io part
 
 var express = require("express");
 var request = require("request");
 var app = express();
 
 var port = 5000;
-// const httpServer = app.listen(port, () => {
-//   console.log('listening on *:' + port);
-// });
 
 var httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer, {
   cors: {
-    // origin: "https://example.com",
+    // origin: "https://google.com",
     methods: ["GET", "POST"]
   }
 });
@@ -31,23 +64,58 @@ io.on("connection", socket => {
   // socket.send("Hello!");
   // socket.emit("greetings", "Hey!", { "ms": "jane" }, Buffer.from([4, 3, 3, 1]));
   this.socket = socket;
-  socket.emit('SocketIO Server online')
+  socket.emit('SocketIO Server online');
 
   // handle the event which is sent with socket.send()
   socket.on("connectSocket", (pageID) => {
     console.log('Client connected: ' + pageID);
     socket.emit('SocketIO connected with client');
   });
-  socket.on('replyMessage', (pageToken, _pageID, userID, message) => {
+  socket.on('replyMessage', (pageToken, userID, message) => {
     console.log('sending reply');
-    sendMessage(userID, message, pageToken)
+    sendMessage(userID, message, pageToken);
   });
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
+
+  socket.on('updateMessages', (messages, pageID) => {
+    updateMessages(messages, pageID);
+  })
+  socket.on('requestOldMessages', (pageID) => {
+
+  })
 });
 
 
+
+
+
+
+/* https://cloud.mongodb.com/v2/6129c2d2b742310d77d14f18#clusters/connect?clusterId=Cluster0
+
+Cmd to connect mongo
+mongosh "mongodb+srv://cluster0.nk3zq.mongodb.net/myFirstDatabase" \
+  --username user1 -p pass1234
+
+db.test_apples.find().forEach(printjson)
+*/
+
+
+
+
+
+
+/* https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/quick-start/app.js
+https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start/
+
+To run this code:
+  1. Deploy this code to a server running Node.js
+  2. Run `yarn install`
+  3. Add your VERIFY_TOKEN and PAGE_ACCESS_TOKEN to your environment vars
+*/
+
+// Webhook server code
 
 // Parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
@@ -59,7 +127,7 @@ app.get('/', (req, res) => {
 
 // Adds support for GET requests to our webhook
 app.get('/webhook', (req, res) => {  // GET request is for webhook verification
-  const VERIFY_TOKEN = 'praneeth';
+  const VERIFY_TOKEN = 'Callback';
   
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
