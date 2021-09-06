@@ -167,6 +167,7 @@ class ChatPage extends React.Component {
                         var fullName = comment.from.name.split(' ')
                         var firstName = fullName[0]
                         var lastName = fullName[fullName.length - 1]
+                        fullName = comment.from.name
                     }
                     else    {
                         var fullName = 'Unknown User'
