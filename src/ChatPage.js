@@ -104,7 +104,7 @@ class ChatPage extends React.Component {
         })
         conversations[userID].userReply = sendTime  // update last reply time
         conversations[userID].lastReply = sendTime
-        console.log(this.messages)
+        // console.log(this.messages)
         this.messages[userID] = conversations[userID]  // add to this.messages
         this.socket.emit('updateMessages', this.messages, this.pageID)
         this.sleep(1000)
@@ -122,7 +122,7 @@ class ChatPage extends React.Component {
             var conversation = conversations[key]
             var messages = conversation.messages
 
-            console.log(conversation)
+            // console.log(conversation)
             document.getElementsByClassName('largetext')[1].innerText = conversation.fullName
             document.getElementsByClassName('detail-header')[0].innerText = conversation.fullName
             document.getElementsByClassName('detail-value')[0].innerText = conversation.userEmail
@@ -137,11 +137,10 @@ class ChatPage extends React.Component {
 
         var posts = await loadPath(`${pageId}/posts`, pageToken)
         if (posts.hasOwnProperty('error')) { //'error' in posts) {  // && res.error.code == 190) {
-            console.log(posts)
+            // console.log(posts)
             alert('Facebook session expired. Kindly logout and login again.')
             return <Redirect to="/logout" />;
         }
-        // console.log(posts)
         var commentCount = 0;
 
         var conversations = {}   // to store conversations
