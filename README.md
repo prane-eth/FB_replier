@@ -8,7 +8,7 @@ and
 https://rpanel.herokuapp.com/
 
 Github URLs: \
-   Frontend: https://github.com/vh-praneeth/RP_FB_replier
+   Frontend: https://github.com/vh-praneeth/RP_FB_replier \
    Backend: https://github.com/vh-praneeth/RP_FB_backend
 
 Demo video: https://youtu.be/BX65O4est2Q \
