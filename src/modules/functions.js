@@ -63,14 +63,14 @@ export class Message extends React.Component {
                 userLast = index;
         })
 
-        var displayText = this.props.fullName + ' - '  // to display time and name below last message
         if (this.props.from == 'page'){
-            displayText += convertTime(this.props.pageReply)
+            // to display time and name below last message
+            var displayText = this.props.pageName + ' - ' + convertTime(this.props.pageReply)
             var msgSide = 'msgRight'  // if message is from page, place it on right  
             var isLast = (this.props.index == pageLast)
             var profilePic = this.props.pageProfilePic
         } else {
-            displayText += convertTime(this.props.userReply)
+            var displayText = this.props.fullName + ' - '  + convertTime(this.props.userReply)
             var msgSide = 'msgLeft'  // if message is from user, place it on left
             var isLast = (this.props.index == userLast)
             var profilePic = this.props.userProfilePic

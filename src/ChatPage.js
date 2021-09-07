@@ -102,6 +102,7 @@ class ChatPage extends React.Component {
                 firstName: res.first_name,
                 lastName: res.last_name,
                 fullName: res.first_name + ' ' + res.last_name,
+                pageName: this.pageName,
                 userEmail: 'user@email.com',
                 userProfilePic: res.profile_pic,
                 msgSource: 'Facebook DM',
