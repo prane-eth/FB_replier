@@ -14,3 +14,6 @@ Github URLs: \
 Demo video: https://youtu.be/BX65O4est2Q \
 Application status: working well
 
+## Latest screenshot: 
+
+![Screenshot](Screenshot.png)

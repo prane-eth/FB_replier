@@ -241,6 +241,7 @@ button  {
     margin-left: auto;
     margin-top: 0px;
     margin-bottom: auto;
+    color: rgb( 98, 100, 101);
 }
 
 .conversation {
@@ -330,66 +331,34 @@ button  {
 }
 .msgPic    {
     /* to display pic near last message */
-    /* border-radius: 15px;
-    width: 30px;
-    margin-left: 5px;
-    margin-top: 20px;
-    visibility: hidden; */
-}
-.msgLeftPic {
     border-radius: 15px;
     width: 30px;
     margin-left: 5px;
     margin-top: 20px;
-    /* visibility: hidden; */
+}
+.msgLeftPic {
     float: left;
 }
 .msgRightPic   {
-    border-radius: 15px;
-    width: 30px;
-    margin-left: 5px;
-    margin-top: 20px;
-    /* visibility: hidden; */
     float: right;
 }
 
 .msgTime {
     /* to display time near last message */
-    /* float: left;
     display: block;
     width: 100%;
-    text-align: left;
     font-size: 11px;
     margin-left: 5px;
     margin-top: 5px;
     color: rgb( 59,  60,  61);
-    display: none; */
 }
 .msgLeftTime   {
-    float: left;
-    display: block;
-    width: 100%;
-    text-align: left;
-    font-size: 11px;
-    margin-left: 5px;
-    margin-top: 5px;
-    color: rgb( 59,  60,  61);
-    /* display: none; */
-
     margin-left: 40px;
     margin-right: auto;
+    float: left;
+    text-align: left;
 }
 .msgRightTime  {
-    float: left;
-    display: block;
-    width: 100%;
-    text-align: left;
-    font-size: 11px;
-    margin-left: 5px;
-    margin-top: 5px;
-    color: rgb( 59,  60,  61);
-    /* display: none; */
-
     float: right;
     text-align: right;
     margin-right: 40px;

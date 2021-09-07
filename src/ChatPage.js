@@ -54,6 +54,23 @@ class ChatPage extends React.Component {
         // this.backendURL = 'localhost:5000'
         this.backendURL = 'rpanel-be.herokuapp.com'
     }
+    getPostEmbedCode = (postID) => {  // to embed post at starting of conversation
+        // PostID is in the form of "pageID_postID"
+        postID = postID.split('_')
+        var currPageID = postID[0]
+        postID = postID[1]
+        var url = `https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3D${postID}%26id%3D${currPageID}&show_text=true&width=500`
+        return (
+            <iframe src={url} width="500" height="213" style="border:none;overflow:hidden"
+                scrolling="no" frameborder="0" allowfullscreen="true"
+                allow="encrypted-media; picture-in-picture; web-share" 
+            />
+        )  // on a post, click 'embed code' button to get code
+        /*
+        To embed a comment, https://www.facebook.com/${pageID}/posts/${postID}?comment_id=${commentID}
+        https://www.facebook.com/101135272313869/posts/104673101960086?comment_id=104673101960086_104673418626721
+        */
+    }
     componentDidMount = () => {
         if (!this.interval)  {
             this.interval = setInterval(() => {  // refresh at regular intervals
@@ -84,7 +101,7 @@ class ChatPage extends React.Component {
                 return;
         }
         else    {  // if user never sent message earlier
-            var res = await loadPath(userID, this.pageToken)
+            var res = await loadPath(userID, this.pageToken)  // get user details
             res = res.data
             conversations[userID] = {}  // create object for user
             conversations[userID] = {
