@@ -318,20 +318,54 @@ button  {
     margin-right: 4px;
     margin-left: auto; 
 }
+.msgLeftContainer    {
+    float: left;
+    margin-left: 4px;
+    margin-right: auto;
+}
+.msgRightContainer   {
+    float: right;
+    margin-right: 4px;
+    margin-left: auto; 
+}
 .msgPic    {
     /* to display pic near last message */
-    float: left;
+    /* border-radius: 15px;
+    width: 30px;
+    margin-left: 5px;
+    margin-top: 20px;
+    visibility: hidden; */
+}
+.msgLeftPic {
     border-radius: 15px;
     width: 30px;
     margin-left: 5px;
     margin-top: 20px;
+    /* visibility: hidden; */
+    float: left;
 }
 .msgRightPic   {
+    border-radius: 15px;
+    width: 30px;
+    margin-left: 5px;
+    margin-top: 20px;
+    /* visibility: hidden; */
     float: right;
 }
 
 .msgTime {
     /* to display time near last message */
+    /* float: left;
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-size: 11px;
+    margin-left: 5px;
+    margin-top: 5px;
+    color: rgb( 59,  60,  61);
+    display: none; */
+}
+.msgLeftTime   {
     float: left;
     display: block;
     width: 100%;
@@ -340,12 +374,22 @@ button  {
     margin-left: 5px;
     margin-top: 5px;
     color: rgb( 59,  60,  61);
-}
-.msgLeftTime   {
+    /* display: none; */
+
     margin-left: 40px;
     margin-right: auto;
 }
 .msgRightTime  {
+    float: left;
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-size: 11px;
+    margin-left: 5px;
+    margin-top: 5px;
+    color: rgb( 59,  60,  61);
+    /* display: none; */
+
     float: right;
     text-align: right;
     margin-right: 40px;

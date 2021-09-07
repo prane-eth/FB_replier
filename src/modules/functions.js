@@ -49,6 +49,7 @@ export class Message extends React.Component {
         
         var picSide = msgSide + 'Pic'
         var timeSide = msgSide + 'Time'
+        var containerSide = msgSide + 'Container'
         const convertTime = (timestamp) => {
             timestamp = new Date(timestamp)
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -74,12 +75,12 @@ export class Message extends React.Component {
 
         if (isLast)  {   // if this is last message
             return (
-                <div className={'msgContainer ' + msgSide}>
-                    <img className={'msgPic ' + picSide} src={this.props.profilePic} />
+                <div className={containerSide}>
+                    <img className={picSide} src={this.props.profilePic} />
                     <div className={'msg ' + msgSide}>
                         {this.props.message}
                     </div>
-                    <div className={'msgTime ' + timeSide}>{displayText}</div>
+                    <div className={timeSide}>{displayText}</div>
                 </div>
             )
         }
