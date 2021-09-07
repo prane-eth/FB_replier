@@ -20,23 +20,31 @@ class ChatPage extends React.Component {
         super(props)
         this.interval = false;
         var conversations = {   // to store all conversations (comments and messages)
-            // '365836151': {   // dummy data
-            //     userReply: '2021-09-02T02:49:10+0000',
-            //     pageReply: '2021-09-02T02:49:10+0000',
-            //     lastReply: '2021-09-02T02:49:10+0000',
-            //     firstName: 'Dummy',
-            //     lastName: 'Chat',
-            //     fullName: 'Dummy Chat',
-            //     userEmail: 'user@email.com',
-            //     userProfilePic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyb_QltThW67ODgBYOo4qFR8n7Xai2JLQhIVEDQ2cpJ8S2Hs5eDmlU9R3JMnvrVn99gkw&usqp=CAU",
-            //     msgSource: 'Facebook Post',
-            //     messages: [
-            //         {from: 'user Name', message: 'this is comment'},
-            //         {from: 'page', message: 'reply given by page'},
-            //         {from: 'user Name', message: 'Got item replaced. Thank you.'},
-            //         {from: 'page', message: 'Thank you for choosing Amazon'},
-            //     ]
-            // },
+            '365836151': {   // dummy data
+                userReply: '2021-09-02T02:49:10+0000',
+                pageReply: '2020-01-02T02:49:10+0000',
+                lastReply: '2021-09-02T02:49:10+0000',
+                firstName: 'Dummy',
+                lastName: 'Chat',
+                fullName: 'Dummy Chat',
+                userEmail: 'user@email.com',
+                userProfilePic: "/nopic.png",
+                msgSource: 'Facebook Post',
+                messages: [
+                    {from: 'user Name', message: 'this is comment'},
+                    {from: 'page', message: 'reply given by page'},
+                    {from: 'user Name', message: 'Got item replaced. Thank you.'},
+                    {from: 'page', message: 'Thank you for choosing Amazon'},
+                ],
+                userMessages: [
+                    {from: 'user Name', message: 'this is comment'},
+                    {from: 'user Name', message: 'Got item replaced. Thank you.'},
+                ],
+                pageMessages: [
+                    {from: 'page', message: 'reply given by page'},
+                    {from: 'page', message: 'Thank you for choosing Amazon'},
+                ]
+            },
             commentCount: 0
         }
         this.state = {     // using dummy data to display before refreshing
@@ -49,14 +57,15 @@ class ChatPage extends React.Component {
         this.pageID = ''
         this.socket = null
         this.currUser = ''
-        this.messages = {}  // Facebook DM messages
+        this.currConv = {}
+        this.DMMessages = {}  // Facebook DM messages
         // this.backendURL = 'localhost:5000'
         this.backendURL = 'rpanel-be.herokuapp.com'
     }
     componentDidMount = () => {
         if (!this.interval)  {
             this.interval = setInterval(() => {  // refresh at regular intervals
-                this.refreshComments()
+                // this.refreshComments()
             }, 10000);  // 30 seconds - due to rate-limiting issue
         }
 
@@ -65,12 +74,12 @@ class ChatPage extends React.Component {
         }
         this.socket.emit("connectSocket", this.pageID)
         this.socket.on("newMessage", this.handleNewMessage)
-        this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
+        // this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
         this.socket.on('oldMessages', this.handleOldMessages)
     }
     handleOldMessages = (msg) => {
         console.log('got old messages')
-        this.messages = msg;
+        this.DMMessages = msg;
         this.refreshComments()  // refresh when page just loaded
     }
     handleNewMessage = async (userID, msgText, sendTime) => {
@@ -97,16 +106,21 @@ class ChatPage extends React.Component {
                 userProfilePic: res.profile_pic,
                 msgSource: 'Facebook DM',
                 messages: [ ],
+                userMessages: [ ],
+                pageMessages: [ ],
             }
         }
         conversations[userID].messages.push({
             from: conversations[userID].fullName, message: msgText
         })
+        conversations[userID].userMessages.push({
+            from: conversations[userID].fullName, message: msgText
+        })
         conversations[userID].userReply = sendTime  // update last reply time
         conversations[userID].lastReply = sendTime
-        // console.log(this.messages)
-        this.messages[userID] = conversations[userID]  // add to this.messages
-        this.socket.emit('updateMessages', this.messages, this.pageID)
+        // console.log(this.DMMessages)
+        this.DMMessages[userID] = conversations[userID]  // add to this.DMMessages
+        this.socket.emit('updateMessages', this.DMMessages, this.pageID)
         this.sleep(1000)
         this.addMessagesByIndex(this.state.currIndex)  // update messages on page
     }
@@ -120,6 +134,7 @@ class ChatPage extends React.Component {
         if (index != -1)  {
             var key = Object.keys(conversations)[index]
             var conversation = conversations[key]
+            this.currConv = conversation
             var messages = conversation.messages
 
             // console.log(conversation)
@@ -175,11 +190,15 @@ class ChatPage extends React.Component {
                         lastName: lastName,
                         fullName: fullName,
                         userEmail: 'user@email.com',
-                        userProfilePic: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyb_QltThW67ODgBYOo4qFR8n7Xai2JLQhIVEDQ2cpJ8S2Hs5eDmlU9R3JMnvrVn99gkw&usqp=CAU',
+                        userProfilePic: '/nopic.png',
                         msgSource: 'Facebook Post',
                         messages: [
                             {from: fullName, message: comment.message}
-                        ]
+                        ],
+                        userMessages: [
+                            {from: fullName, message: comment.message}
+                        ],
+                        pageMessages: []
                     }
                     commentCount++
                     var replies = await loadPath(`${comment.id}/comments`, pageToken)
@@ -190,15 +209,19 @@ class ChatPage extends React.Component {
                         // console.log(reply)
                         if ('from' in reply && reply.from.id === pageId)    {  // reply from page
                             conversations[comment.id]['messages'].push({
-                                from: 'page', message: reply.message,
-                                time: reply.created_time
+                                from: 'page', message: reply.message, time: reply.created_time
+                            })
+                            conversations[comment.id].pageMessages.push({
+                                from: conversations[comment.id].fullName, message: reply.message
                             })
                             conversations[comment.id].pageReply = reply.created_time
                         }
                         else    {  // reply from user
                             conversations[comment.id]['messages'].push({
-                                from: fullName, message: reply.message,
-                                time: reply.created_time
+                                from: fullName, message: reply.message, time: reply.created_time
+                            })
+                            conversations[comment.id].userMessages.push({
+                                from: conversations[comment.id].fullName, message: reply.message
                             })
                             conversations[comment.id].userReply = reply.created_time
                         }
@@ -219,7 +242,7 @@ class ChatPage extends React.Component {
             console.log('updated conversations')
             conversations = {
                 ...conversations,
-                ...this.messages   // add FB DM messages
+                ...this.DMMessages   // add FB DM messages
             }
             this.setState({ conversations: conversations })
         }
@@ -258,9 +281,12 @@ class ChatPage extends React.Component {
             this.refreshComments()
         }
         else    {   // if it is Facebook Messenger DM
-            console.log('replyMessage', this.pageToken, convID, msgText)
+            console.log('replyMessage', convID, msgText)
             this.socket.emit('replyMessage', this.pageToken, convID, msgText)
             conversation.messages.push({
+                from: 'page', message: msgText
+            })
+            conversation.pageMessages.push({
                 from: 'page', message: msgText
             })
             var sendTime = new Date().toISOString()
@@ -268,9 +294,9 @@ class ChatPage extends React.Component {
             conversation.lastReply = sendTime
         }
         msgbox.value = ''  // clear existing value in the box
-        this.messages[convID] = conversation  // add to this.messages and this.conversations
+        this.DMMessages[convID] = conversation  // add to this.DMMessages and this.conversations
         this.state.conversations[convID] = conversation
-        this.socket.emit('updateMessages', this.messages, this.pageID)
+        this.socket.emit('updateMessages', this.DMMessages, this.pageID)
         this.addMessagesByIndex(this.state.currIndex)  // load messages after sending new message
     }
     render()    {
@@ -320,11 +346,18 @@ class ChatPage extends React.Component {
                     </div>
                     <div className="currConvContainer">
                         {
-                            this.state.messages.map(item => {
+                            this.state.messages.map((item, index) => {
                                 return (<Message
                                     key = {item.from+item.message}  // because of Error: should every item have unique key
                                     from = {item.from}
                                     message = {item.message}
+                                    index = {index}
+                                    profilePic = {this.currConv.userProfilePic}
+                                    userReply = {this.currConv.userReply}
+                                    pageReply = {this.currConv.pageReply}
+                                    userMessages = {this.currConv.userMessages}
+                                    pageMessages = {this.currConv.pageMessages}
+                                    fullName = {this.currConv.fullName}
                                 />)
                             })
                         }
@@ -351,7 +384,7 @@ class ChatPage extends React.Component {
                 <div className="currUser">
                     <div className="currUserProfile">
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyb_QltThW67ODgBYOo4qFR8n7Xai2JLQhIVEDQ2cpJ8S2Hs5eDmlU9R3JMnvrVn99gkw&usqp=CAU"
+                            src="/nopic.png"
                             className="currUserProfileImage"
                             alt="user-profile"
                         />

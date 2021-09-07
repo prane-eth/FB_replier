@@ -246,24 +246,7 @@ button  {
     margin-bottom: auto;
 }
 
-.msg    {
-    background-color: white;
-    border: 1px solid rgb(231, 231, 232);
-    border-radius: 10px;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 15px;
-    height: 23px;
-}
-.msgLeft    {
-    margin-left: 20px;
-}
-.msgRight   {
-    float: right;
-    margin-left: auto; 
-    margin-right: 20px;
-}
-.convContainer {
+.conversation {
     width: 25vw;
     display: flex;
     flex-direction: column;
@@ -276,31 +259,31 @@ button  {
     padding-top: 20px;
     padding-bottom: 20px;
 }
-.convContainer:hover {
+.conversation:hover {
     cursor: pointer;
     /* change mouse cursor to pointer to make it look like a link */
 }
-.msgDetailsContainer {
+.convDetails {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
 }
-.msgTimeContainer {
+.convTime {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
 }
-.nameTypeContainer {
+.nameType {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
 }
-.nameTypeContainer > h3, h5, p {
+.nameType > h3, h5, p {
     margin-bottom: 0px;
     margin-top: 0px;
 }
@@ -315,4 +298,58 @@ button  {
     height: 17px;
     /*  */
     margin: auto 20px;
+}
+
+
+.msg    {
+    background-color: white;
+    border: 1px solid rgb(231, 231, 232);
+    border-radius: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 15px;
+    height: 23px;
+}
+.msgLeft    {
+    float: left;
+    margin-left: 4px;
+    margin-right: auto;
+}
+.msgRight   {
+    float: right;
+    margin-right: 4px;
+    margin-left: auto; 
+}
+.msgPic    {
+    /* to display pic near last message */
+    float: left;
+    border-radius: 15px;
+    width: 30px;
+    margin-left: 5px;
+    margin-top: 20px;
+}
+.msgRightPic   {
+    float: right;
+}
+
+.msgTime {
+    /* to display time near last message */
+    float: left;
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-size: 11px;
+    margin-left: 5px;
+    margin-top: 5px;
+    color: rgb( 59,  60,  61);
+}
+.msgLeftTime   {
+    margin-left: 40px;
+    margin-right: auto;
+}
+.msgRightTime  {
+    float: right;
+    text-align: right;
+    margin-right: 40px;
+    margin-left: auto;
 }

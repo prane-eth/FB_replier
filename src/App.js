@@ -86,7 +86,7 @@ class LoginPage extends React.Component {
           > Login with Facebook </div> */}
           
           <p id="login_text">
-            By logging in, you give consent to store and access the cookies
+            By logging in, you give consent to store and access the cookies until you logout
           </p>
     
         </header>
