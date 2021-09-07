@@ -71,7 +71,7 @@ class ChatPage extends React.Component {
     }
     handleOldMessages = (msg) => {
         console.log('got old messages')
-        this.DMMessages = msg;
+        this.DMMessages = msg || {};  // if no messages in database, use empty object
         this.refreshComments()  // refresh when page just loaded
     }
     handleNewMessage = async (userID, msgText, sendTime) => {
@@ -86,7 +86,6 @@ class ChatPage extends React.Component {
         else    {  // if user never sent message earlier
             var res = await loadPath(userID, this.pageToken)  // get user details
             res = res.data
-            conversations[userID] = {}  // create object for user
             conversations[userID] = {
                 userReply: sendTime,
                 pageReply: '',
@@ -106,7 +105,6 @@ class ChatPage extends React.Component {
         })
         conversations[userID].userReply = sendTime  // update last reply time
         conversations[userID].lastReply = sendTime
-        // console.log(this.DMMessages)
         this.DMMessages[userID] = conversations[userID]  // add to this.DMMessages
         this.socket.emit('updateMessages', this.DMMessages, this.pageID)
         this.sleep(1000)
@@ -116,7 +114,7 @@ class ChatPage extends React.Component {
         if (this.interval)
             clearInterval(this.interval)
     }
-    addMessagesByIndex = (index) => {
+    addMessagesByIndex = async (index) => {
         var messages = []
         var conversations = this.state.conversations
         if (index != -1)  {
@@ -124,6 +122,11 @@ class ChatPage extends React.Component {
             var conversation = conversations[key]
             this.currConv = conversation
             var messages = conversation.messages
+
+            if (conversation.userID) {  // if there is userID, use it to get profile pic
+                var res = await loadPath(conversation.userID, this.pageToken)
+                conversation.userProfilePic = res.data.profile_pic
+            }
 
             // console.log(conversation)
             document.getElementsByClassName('largetext')[1].innerText = conversation.fullName
@@ -162,15 +165,16 @@ class ChatPage extends React.Component {
                         var firstName = fullName[0]
                         var lastName = fullName[fullName.length - 1]
                         fullName = comment.from.name
+                        var userID = comment.from.id
                     }
                     else    {  // if unable to get the name
                         var fullName = 'Unknown User'
                         var firstName = 'Unknown'
                         var lastName = 'User'
+                        var userID = null
                     }
                     // remove pageName from mentioned comment
                     comment.message = comment.message.replace(pageName, '', 1).trim()
-                    conversations[comment.id] = {}  // creating value in object
                     conversations[comment.id] = {
                         userReply: comment.created_time,  // time of last reply
                         pageReply: '',
@@ -178,6 +182,7 @@ class ChatPage extends React.Component {
                         firstName: firstName,
                         lastName: lastName,
                         fullName: fullName,
+                        userID: userID,
                         userEmail: 'user@email.com',
                         userProfilePic: '/nopic.png',
                         msgSource: 'Facebook Post',
@@ -282,7 +287,7 @@ class ChatPage extends React.Component {
         postID = postID[1]
         var url = `https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3D${currPageID}%26id%3D${postID}&show_text=true&width=500`
         return (
-            <iframe src={url} width="500" height="213" scrolling="no" frameBorder="0"
+            <iframe key={postID} src={url} width="500" height="213" scrolling="no" frameBorder="0"
                 allow="encrypted-media; picture-in-picture; web-share" 
             />
         )  // on a post, click 'embed code' button to get code

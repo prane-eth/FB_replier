@@ -38,23 +38,22 @@ export class Conversation extends React.Component {
 }
 
 export class Message extends React.Component {
+    convertTime = (timestamp) => {
+        timestamp = new Date(timestamp)
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ]
+        var result = monthNames[timestamp.getMonth()] + ' '
+        var date = timestamp.getDate()
+        if (date < 10)
+            date = '0' + date
+        else
+            date = '' + date
+        result += date + ', '
+        result += timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+        return result
+    }
     render() {
-        const convertTime = (timestamp) => {
-            timestamp = new Date(timestamp)
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ]
-            var result = monthNames[timestamp.getMonth()] + ' '
-            var date = timestamp.getDate()
-            if (date < 10)
-                date = '0' + date
-            else
-                date = '' + date
-            result += date + ', '
-            result += timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-            return result
-        }
-
         var userLast = 0, pageLast = 0
         this.props.messages.map((item, index) => {
             if (item.from == 'page')
@@ -65,12 +64,12 @@ export class Message extends React.Component {
 
         if (this.props.from == 'page'){
             // to display time and name below last message
-            var displayText = this.props.pageName + ' - ' + convertTime(this.props.pageReply)
+            var displayText = this.props.pageName + ' - ' + this.convertTime(this.props.pageReply)
             var msgSide = 'msgRight'  // if message is from page, place it on right  
             var isLast = (this.props.index == pageLast)
             var profilePic = this.props.pageProfilePic
         } else {
-            var displayText = this.props.fullName + ' - '  + convertTime(this.props.userReply)
+            var displayText = this.props.fullName + ' - '  + this.convertTime(this.props.userReply)
             var msgSide = 'msgLeft'  // if message is from user, place it on left
             var isLast = (this.props.index == userLast)
             var profilePic = this.props.userProfilePic
