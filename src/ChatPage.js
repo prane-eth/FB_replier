@@ -36,14 +36,6 @@ class ChatPage extends React.Component {
                     {from: 'user Name', message: 'Got item replaced. Thank you.'},
                     {from: 'page', message: 'Thank you for choosing Amazon'},
                 ],
-                userMessages: [
-                    {from: 'user Name', message: 'this is comment'},
-                    {from: 'user Name', message: 'Got item replaced. Thank you.'},
-                ],
-                pageMessages: [
-                    {from: 'page', message: 'reply given by page'},
-                    {from: 'page', message: 'Thank you for choosing Amazon'},
-                ]
             },
             commentCount: 0
         }
@@ -73,9 +65,9 @@ class ChatPage extends React.Component {
             this.socket = socketio.connect(this.backendURL)
         }
         this.socket.emit("connectSocket", this.pageID)
-        this.socket.on("newMessage", this.handleNewMessage)
         this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
         this.socket.on('oldMessages', this.handleOldMessages)
+        this.socket.on("newMessage", this.handleNewMessage)
     }
     handleOldMessages = (msg) => {
         console.log('got old messages')
@@ -106,15 +98,10 @@ class ChatPage extends React.Component {
                 userEmail: 'user@email.com',
                 userProfilePic: res.profile_pic,
                 msgSource: 'Facebook DM',
-                messages: [ ],
-                userMessages: [ ],
-                pageMessages: [ ],
+                messages: [ ]
             }
         }
         conversations[userID].messages.push({
-            from: conversations[userID].fullName, message: msgText
-        })
-        conversations[userID].userMessages.push({
             from: conversations[userID].fullName, message: msgText
         })
         conversations[userID].userReply = sendTime  // update last reply time
@@ -195,11 +182,7 @@ class ChatPage extends React.Component {
                         msgSource: 'Facebook Post',
                         messages: [
                             {from: fullName, message: comment.message}
-                        ],
-                        userMessages: [
-                            {from: fullName, message: comment.message}
-                        ],
-                        pageMessages: []
+                        ]
                     }
                     commentCount++
                     var replies = await loadPath(`${comment.id}/comments`, pageToken)
@@ -212,17 +195,11 @@ class ChatPage extends React.Component {
                             conversations[comment.id]['messages'].push({
                                 from: 'page', message: reply.message, time: reply.created_time
                             })
-                            conversations[comment.id].pageMessages.push({
-                                from: conversations[comment.id].fullName, message: reply.message
-                            })
                             conversations[comment.id].pageReply = reply.created_time
                         }
                         else    {  // reply from user
                             conversations[comment.id]['messages'].push({
                                 from: fullName, message: reply.message, time: reply.created_time
-                            })
-                            conversations[comment.id].userMessages.push({
-                                from: conversations[comment.id].fullName, message: reply.message
                             })
                             conversations[comment.id].userReply = reply.created_time
                         }
@@ -287,11 +264,8 @@ class ChatPage extends React.Component {
             conversation.messages.push({
                 from: 'page', message: msgText
             })
-            conversation.pageMessages.push({
-                from: 'page', message: msgText
-            })
             var sendTime = new Date().toISOString()
-            conversation.userReply = sendTime  // update last reply time
+            conversation.pageReply = sendTime  // update last reply time
             conversation.lastReply = sendTime
         }
         msgbox.value = ''  // clear existing value in the box
@@ -311,8 +285,9 @@ class ChatPage extends React.Component {
             alert('Error: unable to find Page Token. Kindly login again.')
             return <Redirect to="/logout" />;
         }
-        console.log(this.fbDetails)
+        // console.log(this.fbDetails)
         this.pageProfilePic = JSON.parse(this.fbDetails)['picture']['data']['url']
+        console.log(this.state.conversations)
 
         return (
             <div className="pageContainer">
@@ -359,9 +334,8 @@ class ChatPage extends React.Component {
                                     pageProfilePic = {this.pageProfilePic}
                                     userReply = {this.currConv.userReply}
                                     pageReply = {this.currConv.pageReply}
-                                    userMessages = {this.currConv.userMessages}
-                                    pageMessages = {this.currConv.pageMessages}
                                     fullName = {this.currConv.fullName}
+                                    pageName = {this.pageName}
                                     messages = {this.currConv.messages}
                                 />)
                             })
