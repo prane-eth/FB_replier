@@ -65,7 +65,7 @@ class ChatPage extends React.Component {
     componentDidMount = () => {
         if (!this.interval)  {
             this.interval = setInterval(() => {  // refresh at regular intervals
-                // this.refreshComments()
+                this.refreshComments()
             }, 10000);  // 30 seconds - due to rate-limiting issue
         }
 
@@ -74,7 +74,7 @@ class ChatPage extends React.Component {
         }
         this.socket.emit("connectSocket", this.pageID)
         this.socket.on("newMessage", this.handleNewMessage)
-        // this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
+        this.socket.emit('requestOldMessages', this.pageID)  // get messages only 1 time from server
         this.socket.on('oldMessages', this.handleOldMessages)
     }
     handleOldMessages = (msg) => {
@@ -310,6 +310,8 @@ class ChatPage extends React.Component {
             alert('Error: unable to find Page Token. Kindly login again.')
             return <Redirect to="/logout" />;
         }
+        console.log(this.fbDetails)
+        this.pageProfilePic = JSON.parse(this.fbDetails)['picture']['data']['url']
 
         return (
             <div className="pageContainer">
@@ -352,12 +354,14 @@ class ChatPage extends React.Component {
                                     from = {item.from}
                                     message = {item.message}
                                     index = {index}
-                                    profilePic = {this.currConv.userProfilePic}
+                                    userProfilePic = {this.currConv.userProfilePic}
+                                    pageProfilePic = {this.pageProfilePic}
                                     userReply = {this.currConv.userReply}
                                     pageReply = {this.currConv.pageReply}
                                     userMessages = {this.currConv.userMessages}
                                     pageMessages = {this.currConv.pageMessages}
                                     fullName = {this.currConv.fullName}
+                                    messages = {this.currConv.messages}
                                 />)
                             })
                         }

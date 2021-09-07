@@ -39,17 +39,6 @@ export class Conversation extends React.Component {
 
 export class Message extends React.Component {
     render() {
-        var isLast = true;  // TODO: set to default false
-        var pageMessages = this.props.pageMessages
-        var userMessages = this.props.userMessages
-        if (this.props.from == 'page')  // if message is from page, place it on right
-            var msgSide = 'msgRight'
-        else  // if message is not from page, place it on left
-            var msgSide = 'msgLeft'
-        
-        var picSide = msgSide + 'Pic'
-        var timeSide = msgSide + 'Time'
-        var containerSide = msgSide + 'Container'
         const convertTime = (timestamp) => {
             timestamp = new Date(timestamp)
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -66,17 +55,35 @@ export class Message extends React.Component {
             return result
         }
 
-        var displayText  // to display time and name below last message
-        displayText = this.props.fullName + ' - '
-        if (this.props.from == 'page')
+        var userLast = 0, pageLast = 0
+        this.props.messages.map((item, index) => {
+            if (item.from == 'page')
+                pageLast = index;
+            else
+                userLast = index;
+        })
+
+        var displayText = this.props.fullName + ' - '  // to display time and name below last message
+        if (this.props.from == 'page'){
             displayText += convertTime(this.props.pageReply)
-        else
+            var msgSide = 'msgRight'  // if message is from page, place it on right  
+            var isLast = (this.props.index == pageLast)
+            var profilePic = this.props.pageProfilePic
+        } else {
             displayText += convertTime(this.props.userReply)
+            var msgSide = 'msgLeft'  // if message is from user, place it on left
+            var isLast = (this.props.index == userLast)
+            var profilePic = this.props.userProfilePic
+        }
+        
+        var picSide = msgSide + 'Pic'
+        var timeSide = msgSide + 'Time'
+        var containerSide = msgSide + 'Container'
 
         if (isLast)  {   // if this is last message
             return (
                 <div className={containerSide}>
-                    <img className={picSide} src={this.props.profilePic} />
+                    <img className={picSide} src={profilePic} />
                     <div className={'msg ' + msgSide}>
                         {this.props.message}
                     </div>
@@ -86,12 +93,14 @@ export class Message extends React.Component {
         }
         else {
             return (   // div instead of img. doesnt display pic
-                <div className={'msgContainer ' + msgSide}>
-                    <div className={'msgPic ' + picSide} src={this.props.profilePic} />
+                <div className={containerSide}>
+                    {/* dont display any image */}
+                    <div className={picSide} src={this.props.profilePic} />
                     <div className={'msg ' + msgSide}>
                         {this.props.message}
                     </div>
-                    <div className={'msgTime ' + timeSide}>{displayText}</div>
+                    <div className={timeSide}> </div>
+                    {/* dont display any text */}
                 </div>
             )
         }
