@@ -65,8 +65,8 @@ export class Message extends React.Component {
             return result
         }
 
-        var displayText;  // to display time and name below last message
-        displayText = this.props.fullName + ' - ';
+        var displayText  // to display time and name below last message
+        displayText = this.props.fullName + ' - '
         if (this.props.from == 'page')
             displayText += convertTime(this.props.pageReply)
         else
