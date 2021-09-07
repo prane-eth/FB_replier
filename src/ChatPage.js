@@ -54,23 +54,6 @@ class ChatPage extends React.Component {
         // this.backendURL = 'localhost:5000'
         this.backendURL = 'rpanel-be.herokuapp.com'
     }
-    getPostEmbedCode = (postID) => {  // to embed post at starting of conversation
-        // PostID is in the form of "pageID_postID"
-        postID = postID.split('_')
-        var currPageID = postID[0]
-        postID = postID[1]
-        var url = `https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3D${postID}%26id%3D${currPageID}&show_text=true&width=500`
-        return (
-            <iframe src={url} width="500" height="213" style="border:none;overflow:hidden"
-                scrolling="no" frameborder="0" allowfullscreen="true"
-                allow="encrypted-media; picture-in-picture; web-share" 
-            />
-        )  // on a post, click 'embed code' button to get code
-        /*
-        To embed a comment, https://www.facebook.com/${pageID}/posts/${postID}?comment_id=${commentID}
-        https://www.facebook.com/101135272313869/posts/104673101960086?comment_id=104673101960086_104673418626721
-        */
-    }
     componentDidMount = () => {
         if (!this.interval)  {
             this.interval = setInterval(() => {  // refresh at regular intervals
@@ -292,6 +275,22 @@ class ChatPage extends React.Component {
         this.socket.emit('updateMessages', this.DMMessages, this.pageID)
         this.addMessagesByIndex(this.state.currIndex)  // load messages after sending new message
     }
+    getPostEmbedCode = (postID) => {  // to embed post at starting of conversation
+        // PostID is in the form of "pageID_postID"
+        postID = postID.split('_')
+        var currPageID = postID[0]
+        postID = postID[1]
+        var url = `https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3D${currPageID}%26id%3D${postID}&show_text=true&width=500`
+        return (
+            <iframe src={url} width="500" height="213" scrolling="no" frameBorder="0"
+                allow="encrypted-media; picture-in-picture; web-share" 
+            />
+        )  // on a post, click 'embed code' button to get code
+        /*
+        To embed a comment, https://www.facebook.com/${pageID}/posts/${postID}?comment_id=${commentID}
+        https://www.facebook.com/101135272313869/posts/104673101960086?comment_id=104673101960086_104673418626721
+        */
+    }
     render()    {
         this.fbDetails = cookie.load('fbDetails', { path: '/' })
         this.pageToken = cookie.load('pageToken', { path: '/' })
@@ -341,6 +340,15 @@ class ChatPage extends React.Component {
                         <h3 className="largetext"> {'Unknown User'} </h3>
                     </div>
                     <div className="currConvContainer">
+                        {
+                            [1].map((_item, _index) => {
+                                if (this.state.currIndex >= 0
+                                        && this.currConv.msgSource == 'Facebook Post') {
+                                    var postID = Object.keys(this.state.conversations)[this.state.currIndex]
+                                    return this.getPostEmbedCode(postID)
+                                }
+                            })
+                        }
                         {
                             this.state.messages.map((item, index) => {
                                 return (<Message

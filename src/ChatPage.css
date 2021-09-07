@@ -349,14 +349,14 @@ button  {
     width: 100%;
     font-size: 11px;
     margin-left: 5px;
-    margin-top: 5px;
+    margin-top: 10px;
     color: rgb( 59,  60,  61);
 }
 .msgLeftTime   {
-    margin-left: 40px;
-    margin-right: auto;
     float: left;
     text-align: left;
+    margin-left: 40px;
+    margin-right: auto;
 }
 .msgRightTime  {
     float: right;
@@ -364,3 +364,14 @@ button  {
     margin-right: 40px;
     margin-left: auto;
 }
+
+/* for embedding the post */
+iframe  {
+    border: none;
+    overflow: hidden;
+    margin-left: 45px;
+}
+/* In HTML, <iframe src={url} width="500" height="213" style={{border:'none', overflow:'hidden'}}
+                scrolling="no" frameBorder="0"
+                allow="encrypted-media; picture-in-picture; web-share" 
+            /> */

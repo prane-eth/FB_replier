@@ -83,24 +83,22 @@ export class Message extends React.Component {
         if (isLast)  {   // if this is last message
             return (
                 <div className={containerSide}>
-                    <img className={picSide} src={profilePic} />
+                    <img className={'msgPic ' + picSide} src={profilePic} />
                     <div className={'msg ' + msgSide}>
                         {this.props.message}
                     </div>
-                    <div className={timeSide}>{displayText}</div>
+                    <div className={'msgTime ' + timeSide}>{displayText}</div>
                 </div>
             )
         }
         else {
-            return (   // div instead of img. doesnt display pic
+            return (   // doesnt display pic or message details
                 <div className={containerSide}>
-                    {/* dont display any image */}
-                    <div className={picSide} src={this.props.profilePic} />
+                    <div className={'msgPic ' + picSide} src={profilePic} />
                     <div className={'msg ' + msgSide}>
                         {this.props.message}
                     </div>
-                    <div className={timeSide}> </div>
-                    {/* dont display any text */}
+                    <div className={'msgTime ' + timeSide}>{}</div>
                 </div>
             )
         }
