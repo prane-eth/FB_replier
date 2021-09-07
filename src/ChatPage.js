@@ -154,7 +154,8 @@ class ChatPage extends React.Component {
             for (var comment of comments.data.data) {
                 if ('from' in comment && comment.from.id == pageId)  // skip conversations by same page
                     continue;
-                if (comment.message.includes(pageName)) {  // if pageName is mentioned in comment
+                // if pageName is mentioned in comment  - checking is stopped because it is not mentioned in the document
+                if (true) {   // comment.message.includes(pageName)) {
                     // console.log(comment)
                     if ('from' in comment)  {
                         var fullName = comment.from.name.split(' ')
@@ -162,7 +163,7 @@ class ChatPage extends React.Component {
                         var lastName = fullName[fullName.length - 1]
                         fullName = comment.from.name
                     }
-                    else    {
+                    else    {  // if unable to get the name
                         var fullName = 'Unknown User'
                         var firstName = 'Unknown'
                         var lastName = 'User'
