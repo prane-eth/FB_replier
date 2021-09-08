@@ -18,5 +18,6 @@ All the features mentioned in the document are completed and working well.
 
 ## Latest screenshots: 
 
+![Screenshot3](demo_files/Screenshot3.png)
 ![Screenshot](demo_files/Screenshot.png)
 ![Screenshot2](demo_files/Screenshot2.png)
