@@ -12,7 +12,9 @@ Github URLs: \
    Backend: https://github.com/vh-praneeth/RP_FB_backend
 
 Demo video: https://youtu.be/BX65O4est2Q \
-Application status: working well
+Application status: working
+
+All the features mentioned in the document are completed and working well.
 
 ## Latest screenshots: 
 

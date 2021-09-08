@@ -20,23 +20,23 @@ class ChatPage extends React.Component {
         super(props)
         this.interval = false;
         var conversations = {   // to store all conversations (comments and messages)
-            '365836151': {   // dummy data
-                userReply: '2021-09-02T02:49:10+0000',
-                pageReply: '2020-01-02T02:49:10+0000',
-                lastReply: '2021-09-02T02:49:10+0000',
-                firstName: 'Dummy',
-                lastName: 'Chat',
-                fullName: 'Dummy Chat',
-                userEmail: 'user@email.com',
-                userProfilePic: "/nopic.png",
-                msgSource: 'Facebook Post',
-                messages: [
-                    {from: 'user Name', message: 'this is comment'},
-                    {from: 'page', message: 'reply given by page'},
-                    {from: 'user Name', message: 'Got item replaced. Thank you.'},
-                    {from: 'page', message: 'Thank you for choosing Amazon'},
-                ],
-            },
+            // '365836151': {   // dummy data
+            //     userReply: '2021-09-02T02:49:10+0000',
+            //     pageReply: '2020-01-02T02:49:10+0000',
+            //     lastReply: '2021-09-02T02:49:10+0000',
+            //     firstName: 'Dummy',
+            //     lastName: 'Chat',
+            //     fullName: 'Dummy Chat',
+            //     userEmail: 'user@email.com',
+            //     userProfilePic: "/nopic.png",
+            //     msgSource: 'Facebook Post',
+            //     messages: [
+            //         {from: 'user Name', message: 'this is comment'},
+            //         {from: 'page', message: 'reply given by page'},
+            //         {from: 'user Name', message: 'Got item replaced. Thank you.'},
+            //         {from: 'page', message: 'Thank you for choosing Amazon'},
+            //     ],
+            // },
             commentCount: 0
         }
         this.state = {     // using dummy data to display before refreshing
