@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "npm install react-facebook-login --legacy-peer-deps"
+    "heroku-postbuild": "npm install react-facebook-login --peer-deps"
   },
   "eslintConfig": {
     "extends": [
