@@ -237,7 +237,7 @@ button  {
 .lastReply  {
     font-size: 12px;
     width: 50px;
-    margin-right: 18px;
+    margin-right: 0px;
     margin-left: auto;
     margin-top: 0px;
     margin-bottom: auto;

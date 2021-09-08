@@ -123,7 +123,9 @@ class ChatPage extends React.Component {
             this.currConv = conversation
             var messages = conversation.messages
 
-            if (conversation.userID) {  // if there is userID, use it to get profile pic
+            if (conversation.userID
+                    && conversation.userProfilePic == '/nopic.png') { 
+                    // if there is no profile pic but there is userID, use it to get profile pic
                 var res = await loadPath(conversation.userID, this.pageToken)
                 conversation.userProfilePic = res.data.profile_pic
             }
@@ -233,16 +235,35 @@ class ChatPage extends React.Component {
         else
             console.log('Checked conversations. Not updated')
     }
-    convertTime = (lastTime) => {
-        var time = new Date(lastTime);
-        time = time.toString().split(' ')
-        var time_min = time[4]
-        time_min = time_min.split(':')
-        time_min = time_min[0] + ':' + time_min[1]
-        time[4]=  time_min
-        time = [time[4], time[1], time[2]]  // , time[3]
-        time = time.join(' ')
-        return time
+    findTimeDifference = (timestamp) => {
+        timestamp = new Date(timestamp)
+        var seconds = Math.floor((new Date() - timestamp) / 1000);
+      
+        var interval = seconds / 31536000;  // seconds in 1 year
+        if (interval > 1)
+          return Math.floor(interval) + "y";
+        
+        interval = seconds / 2592000;
+        if (interval > 1)
+          return Math.floor(interval) + "m";
+
+        interval = seconds / 604800;
+        if (interval > 1)
+            return Math.floor(interval) + "w";  // weeks
+        
+        interval = seconds / 86400;
+        if (interval > 1)
+          return Math.floor(interval) + "d";  // days
+        
+        interval = seconds / 3600;
+        if (interval > 1)
+          return Math.floor(interval) + "h";  // hours
+        
+        interval = seconds / 60;
+        if (interval > 1)
+          return Math.floor(interval) + "m";  // minutes
+        
+        return "<1m";
     }
     sleep = (milliseconds) => {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -334,7 +355,7 @@ class ChatPage extends React.Component {
                                 fullName = {item.fullName}
                                 msgSource = {item.msgSource}
                                 text = {item.messages[0].message}
-                                lastReply = { this.convertTime(item.lastReply) }
+                                lastReply = { this.findTimeDifference(item.lastReply) }
                                 onClick={() => { this.addMessagesByIndex(index) }}
                             />)
                         })
