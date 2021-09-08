@@ -242,6 +242,7 @@ button  {
     margin-top: 0px;
     margin-bottom: auto;
     color: rgb( 98, 100, 101);
+    font-weight: bold;
 }
 
 .conversation {
@@ -351,6 +352,7 @@ button  {
     margin-left: 5px;
     margin-top: 10px;
     color: rgb( 59,  60,  61);
+    font-weight: bold;
 }
 .msgLeftTime   {
     float: left;
