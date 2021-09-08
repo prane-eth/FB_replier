@@ -51,6 +51,7 @@ class ChatPage extends React.Component {
         this.currUser = ''
         this.currConv = {}
         this.DMMessages = {}  // Facebook DM messages
+        this.convIDs = {}  // conversation IDs for each user.   userID: convID
         // this.backendURL = 'localhost:5000'
         this.backendURL = 'rpanel-be.herokuapp.com'
     }
@@ -69,50 +70,84 @@ class ChatPage extends React.Component {
         this.socket.on('oldMessages', this.handleOldMessages)
         this.socket.on("newMessage", this.handleNewMessage)
     }
+    componentWillUnmount() {
+        if (this.interval)
+            clearInterval(this.interval)
+    }
     handleOldMessages = (msg) => {
         console.log('got old messages')
         this.DMMessages = msg || {};  // if no messages in database, use empty object
+        if ('convIDs' in this.DMMessages)
+            this.convIDs = this.DMMessages.convIDs
         this.refreshComments()  // refresh when page just loaded
+    }
+    newConvID = (convID, userID) => {
+        if (convID.includes('.')) { // if there is a dot
+            var convNum = convID.split('.')[1]  // last number of convID
+            convNum = parseInt(convNum, 10) + 1   
+            convID = userID + '.' + convNum
+            // change '1234567.1' to '1234567.2' for the same userID
+        }
+        else    {
+            convID = convID + '.1'
+        }
+        this.convIDs[userID] = convID;  // store new convID
+        return convID
+    }
+    getConvID = (userID) => {
+        if (!(userID in this.convIDs))  // if userID is not present, add it
+            this.convIDs[userID] = userID
+        return this.convIDs[userID]
     }
     handleNewMessage = async (userID, msgText, sendTime) => {
         console.log('got new message', userID, msgText, sendTime)
+        var convID = this.getConvID(userID)
         var conversations = this.state.conversations
-        if (userID in conversations) {  // user sent message earlier
-            var messageList = conversations[userID].messages
-            // if same message is already present, return
+        
+        if (convID in conversations) {  // user sent message earlier
+            var conv = conversations[convID]
+
+            // check last user reply time.    if no lastReply, use userReply
+            var lastUserReply = conv.lastReply || conv.userReply
+            var seconds = Math.floor((new Date() - new Date(lastUserReply)) / 1000);
+            var hours = seconds / 3600
+            if (hours >= 24)  // if difference is 24 hours, create new conversation
+                convID = this.newConvID(convID, userID)
+
+            var messageList = conversations[convID].messages
+            // if exactly same message is already present, return
             if (msgText == messageList[messageList.length - 1].message)
                 return;
         }
         else    {  // if user never sent message earlier
             var res = await loadPath(userID, this.pageToken)  // get user details
             res = res.data
-            conversations[userID] = {
+            conversations[convID] = {
                 userReply: sendTime,
                 pageReply: '',
                 lastReply: sendTime,
                 firstName: res.first_name,
                 lastName: res.last_name,
                 fullName: res.first_name + ' ' + res.last_name,
+                userID: userID,
                 pageName: this.pageName,
                 userEmail: 'user@email.com',
                 userProfilePic: res.profile_pic,
                 msgSource: 'Facebook DM',
-                messages: [ ]
+                messages: [ ],
             }
-        }
-        conversations[userID].messages.push({
-            from: conversations[userID].fullName, message: msgText
+            var conv = conversations[convID]
+        }   
+        conv.messages.push({
+            from: conv.fullName, message: msgText
         })
-        conversations[userID].userReply = sendTime  // update last reply time
-        conversations[userID].lastReply = sendTime
-        this.DMMessages[userID] = conversations[userID]  // add to this.DMMessages
-        this.socket.emit('updateMessages', this.DMMessages, this.pageID)
+        conv.userReply = sendTime  // update last reply time
+        conv.lastReply = sendTime
+        this.DMMessages[convID] = conv  // add to this.DMMessages
+        this.DMMessages['convIDs'] = this.convIDs
+        this.socket.emit('updateMessages', this.DMMessages, this.pageID)  // store in Database
         this.sleep(1000)
         this.addMessagesByIndex(this.state.currIndex)  // update messages on page
-    }
-    componentWillUnmount() {
-        if (this.interval)
-            clearInterval(this.interval)
     }
     addMessagesByIndex = async (index) => {
         var messages = []
@@ -123,8 +158,8 @@ class ChatPage extends React.Component {
             this.currConv = conversation
             var messages = conversation.messages
 
-            if (conversation.userID
-                    && conversation.userProfilePic == '/nopic.png') { 
+            if (conversation.userProfilePic == '/nopic.png'
+                    && conversation.userID) { 
                     // if there is no profile pic but there is userID, use it to get profile pic
                 var res = await loadPath(conversation.userID, this.pageToken)
                 conversation.userProfilePic = res.data.profile_pic
@@ -286,8 +321,8 @@ class ChatPage extends React.Component {
             this.refreshComments()
         }
         else    {   // if it is Facebook Messenger DM
-            console.log('replyMessage', convID, msgText)
-            this.socket.emit('replyMessage', this.pageToken, convID, msgText)
+            console.log('replyMessage', conversation.userID, msgText)
+            this.socket.emit('replyMessage', this.pageToken, conversation.userID, msgText)
             conversation.messages.push({
                 from: 'page', message: msgText
             })
@@ -296,8 +331,8 @@ class ChatPage extends React.Component {
             conversation.lastReply = sendTime
         }
         msgbox.value = ''  // clear existing value in the box
-        this.DMMessages[convID] = conversation  // add to this.DMMessages and this.conversations
-        this.state.conversations[convID] = conversation
+        this.DMMessages[conversation.userID] = conversation  // add to this.DMMessages and this.conversations
+        this.state.conversations[conversation.userID] = conversation
         this.socket.emit('updateMessages', this.DMMessages, this.pageID)
         this.addMessagesByIndex(this.state.currIndex)  // load messages after sending new message
     }
@@ -326,11 +361,11 @@ class ChatPage extends React.Component {
             // console.log(this.fbDetails)
             // console.log(this.pageToken)
             alert('Error: unable to find Page Token. Kindly login again.')
-            return <Redirect to="/logout" />;
+            return <Redirect to="/logout" />
         }
         // console.log(this.fbDetails)
         this.pageProfilePic = JSON.parse(this.fbDetails)['picture']['data']['url']
-        console.log(this.state.conversations)
+        // console.log(this.state.conversations)
 
         return (
             <div className="pageContainer">
@@ -346,11 +381,14 @@ class ChatPage extends React.Component {
                     </div>
                     {
                         Object.keys(this.state.conversations).map((key,index) => {
-                            if (key.toString() == 'commentCount' || key.toString() == '_id')
+                            if (key.toString().startsWith('c') || key.toString() == '_id')
                                 return <div key={index} />
                             var item = this.state.conversations[key]
+                            // if a DM has different conversations (>24 hours apart), do nothing
+                            if (item.conversations)
+                                return <span />
                             return (<Conversation
-                                key={index}
+                                key = {index}
                                 isSelected = {index==this.state.currIndex}
                                 fullName = {item.fullName}
                                 msgSource = {item.msgSource}
@@ -397,7 +435,7 @@ class ChatPage extends React.Component {
                         <input
                             type="text" id="msgbox" placeholder="Enter your message"
                             className="msgInputBox"
-                            onKeyDown={(event) => {
+                            onKeyDown={(event) => {  // send message when we press Enter
                                 if (event.key === 'Enter') {
                                     this.sendMsgFromInput();
                                 }
