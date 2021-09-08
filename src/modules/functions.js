@@ -40,7 +40,8 @@ export class Conversation extends React.Component {
 export class Message extends React.Component {
     convertTime = (timestamp) => {
         timestamp = new Date(timestamp)
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        const monthNames = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         ]
         var result = monthNames[timestamp.getMonth()] + ' '

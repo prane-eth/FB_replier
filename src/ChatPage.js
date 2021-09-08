@@ -103,23 +103,25 @@ class ChatPage extends React.Component {
         console.log('got new message', userID, msgText, sendTime)
         var convID = this.getConvID(userID)
         var conversations = this.state.conversations
+        console.log(conversations)
         
         if (convID in conversations) {  // user sent message earlier
             var conv = conversations[convID]
 
             // check last user reply time.    if no lastReply, use userReply
             var lastUserReply = conv.lastReply || conv.userReply
-            var seconds = Math.floor((new Date() - new Date(lastUserReply)) / 1000);
+            var seconds = Math.floor((new Date(sendTime) - new Date(lastUserReply)) / 1000);
             var hours = seconds / 3600
             if (hours >= 24)  // if difference is 24 hours, create new conversation
                 convID = this.newConvID(convID, userID)
-
-            var messageList = conversations[convID].messages
-            // if exactly same message is already present, return
-            if (msgText == messageList[messageList.length - 1].message)
-                return;
+            else  {
+                var messageList = conversations[convID].messages
+                // if exactly same message is already present, return
+                if (msgText == messageList[messageList.length - 1].message)
+                    return;
+            }
         }
-        else    {  // if user never sent message earlier
+        if (!(convID in conversations))    {  // if user never sent message earlier
             var res = await loadPath(userID, this.pageToken)  // get user details
             res = res.data
             conversations[convID] = {

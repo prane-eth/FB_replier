@@ -24,7 +24,7 @@ class LoginPage extends React.Component {
     var response = await axios.get(url);
     // console.log(response)
     response = response.data.data
-    if (Object.keys(response).length == 0) {
+    if (Object.keys(response).length === 0) {
       alert("Error: This app can't be used if you have no pages")
       return
     }
