@@ -148,6 +148,7 @@ class ChatPage extends React.Component {
         this.DMMessages[convID] = conv  // add to this.DMMessages
         this.DMMessages['convIDs'] = this.convIDs
         this.socket.emit('updateMessages', this.DMMessages, this.pageID)  // store in Database
+        console.log('Storing new message in database')
         this.sleep(1000)
         this.addMessagesByIndex(this.state.currIndex)  // update messages on page
     }
@@ -271,6 +272,8 @@ class ChatPage extends React.Component {
         }
         else
             console.log('Checked conversations. Not updated')
+        console.log(this.DMMessages)
+        console.log(this.state.conversations)
     }
     findTimeDifference = (timestamp) => {
         timestamp = new Date(timestamp)
@@ -315,16 +318,9 @@ class ChatPage extends React.Component {
         var convID = Object.keys(conversations)[this.state.currIndex]
         var conversation = conversations[convID];
         if (conversation.msgSource == 'Facebook Post') {  // if its FB post
-            msgText = msgText.replaceAll(' ', '+')
             var path = `${convID}/comments?message=${msgText}`
             var url = `https://graph.facebook.com/${path}&access_token=${this.pageToken}`
             axios.post(url)
-            this.sleep(3000)  // wait for some time. reload comments
-            this.refreshComments()
-        }
-        else    {   // if it is Facebook Messenger DM
-            console.log('replyMessage', conversation.userID, msgText)
-            this.socket.emit('replyMessage', this.pageToken, conversation.userID, msgText)
             conversation.messages.push({
                 from: 'page', message: msgText
             })
@@ -332,10 +328,24 @@ class ChatPage extends React.Component {
             conversation.pageReply = sendTime  // update last reply time
             conversation.lastReply = sendTime
         }
+        else    {   // if it is Facebook Messenger DM
+            var userID = convID
+            convID = this.getConvID(userID)
+            var conversation = conversations[convID];
+            conversation.messages.push({
+                from: 'page', message: msgText
+            })
+            console.log('replyMessage', conversation.userID, msgText)
+            this.socket.emit('replyMessage', this.pageToken, conversation.userID, msgText)
+            var sendTime = new Date().toISOString()
+            conversation.pageReply = sendTime  // update last reply time
+            conversation.lastReply = sendTime
+            this.DMMessages[convID] = conversation  // add to this.DMMessages and this.conversations
+            this.socket.emit('updateMessages', this.DMMessages, this.pageID)
+        }
         msgbox.value = ''  // clear existing value in the box
-        this.DMMessages[conversation.userID] = conversation  // add to this.DMMessages and this.conversations
-        this.state.conversations[conversation.userID] = conversation
-        this.socket.emit('updateMessages', this.DMMessages, this.pageID)
+        this.state.conversations[convID] = conversation 
+        this.setState({ conversations: conversations })  // force to re-render the page
         this.addMessagesByIndex(this.state.currIndex)  // load messages after sending new message
     }
     getPostEmbedCode = (postID) => {  // to embed post at starting of conversation
@@ -403,7 +413,7 @@ class ChatPage extends React.Component {
                 </div>
                 <div className="currConv">
                     <div className="currConvHeader">
-                        <h3 className="largetext"> {'Unknown User'} </h3>
+                        <h3 className="largetext">  </h3>
                     </div>
                     <div className="currConvContainer">
                         {
@@ -459,7 +469,7 @@ class ChatPage extends React.Component {
                             className="currUserProfileImage"
                             alt="user-profile"
                         />
-                        <h4 className="detail-header"> Unknown User </h4>
+                        <h4 className="detail-header">  </h4>
                         <h5 className="detail-grey">  <GoPrimitiveDot/> Offline </h5>
                         <div className="btnContainer">
                             <button onClick={() => alert('No option to call')}>
@@ -474,15 +484,15 @@ class ChatPage extends React.Component {
                         <h4 className="detail-header">Customer Details</h4>
                         <div className="currUserProfileDetailsItem">
                             <h4 className="detail-key"> Email </h4>
-                            <h4 className="detail-value"> unknown@user.com </h4>
+                            <h4 className="detail-value">  </h4>
                         </div>
                         <div className="currUserProfileDetailsItem">
                             <h4 className="detail-key"> First Name </h4>
-                            <h4 className="detail-value"> Unknown </h4>
+                            <h4 className="detail-value">  </h4>
                         </div>
                         <div className="currUserProfileDetailsItem lastItem">
                             <h4 className="detail-key"> Last Name </h4>
-                            <h4 className="detail-value"> User </h4>
+                            <h4 className="detail-value">  </h4>
                         </div>
                         <a href="#" className="details-link"> View more details </a>
                     </div>

@@ -37,7 +37,8 @@ class LoginPage extends React.Component {
       cookie.save('pageToken', pageToken, { path: '/' })
       cookie.save('pageName', pageName, { path: '/' })
       cookie.save('pageId', pageId, { path: '/' })
-      window.location.href="/chat"
+      if (fbDetails && pageToken)
+        window.location.href="/chat"
       return
     }
   }

@@ -15,6 +15,8 @@ var profilePicLink = null;
 
 if (fbDetails) 
     profilePicLink = fbDetails['picture']['data']['url'];
+else
+    <Redirect to="/" />
 
 const Navbar = () => {
     return (
