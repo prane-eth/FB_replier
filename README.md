@@ -1,15 +1,13 @@
-# RP_FB_replier
+# FB_replier
+
+Allows us to reply for Facebook messages and post comments from a single page with multiple conversations.
 
 `npm start` starts the app in the development mode. \
 If you run on localhost, open http://localhost:3000 to view it in the browser.
 
-Deployed on http://praneethvit.ml/
-and
-https://rpanel.herokuapp.com/
-
 Github URLs: \
-   Frontend: https://github.com/vh-praneeth/RP_FB_replier \
-   Backend: https://github.com/vh-praneeth/RP_FB_backend
+   Frontend: https://github.com/vh-praneeth/FB_replier \
+   Backend: https://github.com/vh-praneeth/FB_replier_backend
 
 Demo video: https://youtu.be/gi9VXvMlbaM \
 Application status: working
